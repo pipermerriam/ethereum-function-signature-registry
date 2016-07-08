@@ -1,0 +1,9 @@
+{% extends 'django_tables2/table.html' %}
+{% load django_tables2 %}
+
+
+{% block pagination %}
+    {% with page_obj=table.page paginator=table.paginator %}
+        {% include "partials/pagination.html" %}
+    {% endwith %}
+{% endblock pagination %}

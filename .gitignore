@@ -1,0 +1,10 @@
+public/
+*.pyc
+*.sqlite
+.env
+bower_components/
+node_modules/
+.cache/
+tmp/
+*.log
+build/

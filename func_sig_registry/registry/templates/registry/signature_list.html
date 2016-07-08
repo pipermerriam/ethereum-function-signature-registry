@@ -1,0 +1,17 @@
+{% extends 'layout_full.html' %}
+{% load render_table from django_tables2 %}
+{% load rest_framework %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <form class="form-inline" action="{% url 'site-index' %}" method="get" novalidate>
+        <label for="bytes4_signature">Search Signatures</label>
+        {% render_form serializer template_pack='rest_framework/inline' %}
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+      {% render_table table %}
+    </div>
+  </div>
+{% endblock %}

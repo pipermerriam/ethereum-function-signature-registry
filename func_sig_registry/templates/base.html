@@ -1,0 +1,24 @@
+{% load staticfiles %}<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'site-index' %}">Ethereum Function Signature Registry</a>
+        </div><!-- /.navbar-header -->	
+        <div>
+					<ul class="nav navbar-nav">
+						<li><a href="{% url 'signature-create' %}">Submit Signatures</a></li>
+						<li><a href="{% url 'import-solidity' %}">Submit Solidity Source File</a></li>
+					</ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    {% block body %}
+    {% endblock body %}
+  </body>
+</html>

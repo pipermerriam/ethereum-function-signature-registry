@@ -1,0 +1,20 @@
+{% load django_tables2 %}
+
+
+{% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="{% querystring "page"=page_obj.previous_page_number %}" aria-label="Previous"><span aria-hidden="true">&laquo;</span> Prev</a></li>
+                <li><a href="{% querystring "page"=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
+            {% endif %}
+
+            <li class="active"><a href="{% querystring "page"=page_obj.number %}">{{ page_obj.number }}</a></li>
+
+            {% if page_obj.has_next %}
+                <li><a href="{% querystring "page"=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
+                <li><a href="{% querystring "page"=page_obj.next_page_number %}" aria-label="Next">Next <span aria-hidden="true">&raquo;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
