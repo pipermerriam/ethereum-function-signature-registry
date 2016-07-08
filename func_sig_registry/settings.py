@@ -31,6 +31,7 @@ DEBUG = env.get('DJANGO_DEBUG', type=bool, default=False)
 
 ALLOWED_HOSTS = env.get('DJANGO_ALLOWED_HOSTS', type=list, required=not DEBUG)
 
+SECURE_SSL_REDIRECT = env.get('DJANGO_SECURE_SSL_REDIRECT', type=bool, default=True)
 
 # Application definition
 
@@ -48,7 +49,11 @@ INSTALLED_APPS = [
 ]
 
 
-if env.get('DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True):
+DJANGO_DEBUG_TOOLBAR_ENABLED = env.get(
+    'DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True,
+)
+
+if DJANGO_DEBUG_TOOLBAR_ENABLED:
     # Django Debug Toolbar
     # Provides useful tools for debugging sites either in development or
     # production.
