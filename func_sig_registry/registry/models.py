@@ -1,9 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 
-from .validators import (
-    validate_text_signature,
-)
 from .parsers import (
     extract_function_signatures,
     normalize_function_signature,
@@ -22,7 +19,6 @@ class Signature(models.Model):
 
     text_signature = models.TextField(unique=True,
                                       validators=[
-                                          validate_text_signature,
                                           MinLengthValidator(3),
                                       ])
     bytes_signature = models.ForeignKey('registry.BytesSignature')

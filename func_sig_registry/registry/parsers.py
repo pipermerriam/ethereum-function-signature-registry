@@ -37,8 +37,10 @@ def extract_function_signatures(code):
     return matches or []
 
 
-EXTRACT_ARGUMENTS_REGEX = '(?P<type>{type})(?P<sub_type>(?:\[[0-9]*\])*)?\s+[a-zA-Z_][a-zA-Z0-9_]*'.format(
-    type=TYPE_REGEX,
+EXTRACT_ARGUMENTS_REGEX = (
+    '(?P<type>{type})(?P<sub_type>(?:\[[0-9]*\])*)?\s+[a-zA-Z_][a-zA-Z0-9_]*'.format(
+        type=TYPE_REGEX,
+    )
 )
 
 
