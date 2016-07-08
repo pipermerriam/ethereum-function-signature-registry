@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+import os
 from django.conf.urls import (
     url,
     include,
@@ -26,6 +27,11 @@ from func_sig_registry.registry.views import (
     SolidityImportView,
     ImportContractABIView,
 )
+
+
+def lets_encrypt(request):
+    from django.http import HttpResponse
+    return HttpResponse(os.environ.get('LETS_ENCRYPT_SECRET', ''))
 
 
 urlpatterns = [
@@ -42,4 +48,10 @@ urlpatterns = [
 
     # API
     url(r'^api/v1/', include('func_sig_registry.api_urls', namespace='api')),
+    url(
+        r'^\.well-known/acme-challenge/{0}$'.format(
+            os.environ.get('LETS_ENCRYPT_SECRET_PATH'),
+        ),
+        lets_encrypt,
+    ),
 ]
