@@ -1,6 +1,6 @@
 public/
 *.pyc
-*.sqlite
+*.sqlite3
 .env
 bower_components/
 node_modules/

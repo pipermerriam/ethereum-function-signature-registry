@@ -80,6 +80,7 @@ class SolidityImportView(generics.GenericAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        source_file = serializer.save()
-        Signature.import_from_solidity_source(source_file)
+        source_files = serializer.save()
+        for file_obj in source_files:
+            Signature.import_from_solidity_source(file_obj)
         return redirect('site-index')
