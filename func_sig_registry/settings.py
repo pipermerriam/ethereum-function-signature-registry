@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+import dj_database_url
+import excavator as env
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,12 +24,12 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ren-hg($&oyluf-a5%zfv%w8pj$a&hb+=r-fv8m1a235a3b2!r'
+SECRET_KEY = env.get('DJANGO_SECRET_KEY', required=True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.get('DJANGO_DEBUG', type=bool, default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.get('DJANGO_ALLOWED_HOSTS', type=list, required=not DEBUG)
 
 
 # Application definition
@@ -40,7 +43,20 @@ INSTALLED_APPS = [
     'func_sig_registry.registry',
     'rest_framework',
     'django_tables2',
+    'storages',
+    's3_folder_storage',
 ]
+
+
+if env.get('DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True):
+    # Django Debug Toolbar
+    # Provides useful tools for debugging sites either in development or
+    # production.
+    try:
+        import debug_toolbar  # NOQA
+        INSTALLED_APPS.append('debug_toolbar')
+    except ImportError:
+        pass
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,6 +101,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+DATABASES = {}
+
+DATABASES['default'] = dj_database_url.config(
+    default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+)
+
+DATABASES['default']['ATOMIC_REQUESTS'] = env.get(
+    'DJANGO_ATOMIC_REQUESTS',
+    type=bool,
+    default=True,
+)
 
 
 # Internationalization
@@ -101,13 +128,87 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Files
+# https://docs.djangoproject.com/en/1.9/topics/files/
+DEFAULT_FILE_STORAGE = env.get(
+    'DJANGO_DEFAULT_FILE_STORAGE',
+    type=str,
+    default='django.core.files.storage.FileSystemStorage',
+)
+
+MEDIA_ROOT = env.get(
+    'DJANGO_MEDIA_ROOT',
+    type=str,
+    default=os.path.join(BASE_DIR, 'public', 'media'),
+)
+MEDIA_URL = env.get(
+    'DJANGO_MEDIA_URL',
+    type=str,
+    default='/media/',
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
-STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(APP_DIR, 'static'),
 ]
 
+
+STATIC_ROOT = env.get(
+    'DJANGO_STATIC_ROOT',
+    type=str,
+    default=os.path.join(BASE_DIR, 'public', 'static'),
+)
+
+STATIC_URL = env.get(
+    'DJANGO_STATIC_URL',
+    type=str,
+    default='/static/',
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+STATICFILES_STORAGE = env.get(
+    'DJANGO_STATICFILES_STORAGE',
+    type=str,
+    default='django.contrib.staticfiles.storage.StaticFilesStorage',
+)
+
+
+# AWS Configuration
+DEFAULT_S3_PATH = "media"
+STATIC_S3_PATH = "static"
+
+AWS_ACCESS_KEY_ID = env.get('AWS_ACCESS_KEY_ID', type=str, default=None)
+AWS_SECRET_ACCESS_KEY = env.get('AWS_SECRET_ACCESS_KEY', type=str, default=None)
+AWS_STORAGE_BUCKET_NAME = env.get('AWS_STORAGE_BUCKET_NAME', type=str, default=None)
+AWS_DEFAULT_REGION = env.get('AWS_DEFAULT_REGION', type=str, default=None)
+
+# Boto config
+AWS_REDUCED_REDUNDANCY = True
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = True
+AWS_S3_SECURE_URLS = True
+AWS_IS_GZIPPED = False
+AWS_PRELOAD_METADATA = True
+AWS_HEADERS = {
+    "Cache-Control": "public, max-age=86400",
+}
+
+if AWS_DEFAULT_REGION:
+    # Fix for https://github.com/boto/boto/issues/621
+    AWS_S3_HOST = "s3-{0}.amazonaws.com".format(AWS_DEFAULT_REGION)
+
+
+# DRF
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
 }
