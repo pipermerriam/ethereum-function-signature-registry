@@ -7,16 +7,17 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 from django_tables2 import SingleTableView
 
-from .models import Signature
-from .tables import SignatureTable
-from .serializers import (
-    SignatureSerializer,
-    SolidityImportSerializer,
-    SignatureSearchSerializer,
-)
-from .utils import (
+from func_sig_registry.utils.encoding import (
     decode_hex,
     force_text,
+)
+
+from .models import Signature
+from .tables import SignatureTable
+from .forms import (
+    SignatureForm,
+    SolidityImportForm,
+    SignatureSearchForm,
 )
 
 
@@ -38,10 +39,10 @@ class SignatureListView(SingleTableView, ListView):
     def get_context_data(self, **kwargs):
         context = super(SignatureListView, self).get_context_data(**kwargs)
         if self.request.GET.get('bytes4_signature'):
-            serializer = SignatureSearchSerializer(data=self.request.GET)
+            serializer = SignatureSearchForm(data=self.request.GET)
             serializer.is_valid()
         else:
-            serializer = SignatureSearchSerializer()
+            serializer = SignatureSearchForm()
         context['serializer'] = serializer
         return context
 
@@ -49,7 +50,7 @@ class SignatureListView(SingleTableView, ListView):
 class SignatureCreateView(generics.CreateAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'registry/signature_create.html'
-    serializer_class = SignatureSerializer
+    serializer_class = SignatureForm
 
     def get(self, *args, **kwargs):
         serializer = self.get_serializer()
@@ -68,7 +69,7 @@ class SignatureCreateView(generics.CreateAPIView):
 class SolidityImportView(generics.GenericAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'registry/solidity_source_import.html'
-    serializer_class = SolidityImportSerializer
+    serializer_class = SolidityImportForm
 
     def get(self, *args, **kwargs):
         serializer = self.get_serializer()

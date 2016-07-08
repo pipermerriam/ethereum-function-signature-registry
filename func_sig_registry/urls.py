@@ -13,17 +13,31 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import (
+    url,
+    include,
+)
+from rest_framework import routers
+
 
 from func_sig_registry.registry.views import (
     SignatureListView,
     SignatureCreateView,
     SolidityImportView,
 )
+from func_sig_registry.registry.api_views import (
+    SignatureViewSet,
+)
 
+
+router = routers.SimpleRouter()
+router.register(r'signatures', SignatureViewSet)
 
 urlpatterns = [
     url(r'^$', SignatureListView.as_view(), name='site-index'),
     url(r'^submit/$', SignatureCreateView.as_view(), name='signature-create'),
     url(r'^import-solidity/$', SolidityImportView.as_view(), name='import-solidity'),
+
+    # API
+    url(r'^api/v1/', include(router.urls, namespace='api')),
 ]
