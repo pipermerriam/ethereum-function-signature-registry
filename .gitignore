@@ -1,4 +1,5 @@
 public/
+__pycache__/
 *.pyc
 *.sqlite3
 .env

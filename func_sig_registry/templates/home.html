@@ -1,0 +1,23 @@
+{% extends 'layout_full.html' %}
+{% load rest_framework humanize %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron">
+        <h1 class="display-3">Welcome to the Ethereum Function Signature Database</h1>
+        <p class="lead">Function calls in the Ethereum Virtual Machine are specified by the first four bytes of data sent with a transaction.  These 4-byte signatures are defined as the first four bytes of the Keccak hash (SHA3) of the canonical representation of the function signature.  Since this is a one-way operation, it is not possible to derive the human readable representation of the function from the 4-byte signature.  This database is meant to allow mapping those 4-byte signatures back to their human readable versions.</p>
+        <h2>There are {{ total_signatures|intcomma }} signatures in the database</h2>
+        <hr class="m-y-2">
+        <p class="lead">
+          <form class="form-inline" action="{% url 'signature-list' %}" method="get" novalidate>
+            <label for="bytes4_signature">Search Signatures</label>
+            {% render_form serializer template_pack='rest_framework/inline' %}
+            <button type="submit" class="btn btn-default">Search</button>
+          </form>
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'layout_full.html' %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <h1>API Documentation</h1>
+      <p>The function signature database exposes a RESTful API that is provided free to use by anyone without restriction.</p>
+      <h1>Authentication</h1>
+      <p>There is no authentication necessary to access this API</p>
+      <h1>Content Types</h1>
+      <p>All api endpoints accept requests with the following content types.</p>
+      <ul>
+        <li><code>application/json</code>
+        <li><code>application/x-www-form-urlencoded</code>
+        <li><code>multipart/form-data</code>
+      </ul>
+      <h1>Signatures</h1>
+      <p>The primary data model exposed by the API is the <code>Signature</code>.  Each signature is a mapping between the human readable function signature and the 4-byte function selector used by the EVM.  See the official <a href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI#function-selector" target="_blank">Ethereum Contract ABI documentation</a> for more information.</p>
+      <p>Each signature object returned from the API has the following fields.</p>
+      <ul>
+        <li><code>id</code> (integer): The primary key of the signature.</li>
+        <li><code>text_signature</code> (string): The text representation of the function signature.</li>
+        <li><code>bytes_signature</code> (string): The 4-byte function selector</li>
+        <li><code>hex_signature</code> (string): The hex encoded 4-byte function selector.</li>
+      </ul>
+      <pre>{
+  "id": 1,
+  "text_signature": "balanceOf(address)",
+  "bytes_signature": "r'\x13\xf7",
+  "hex_signature": "0x722713f7",
+}</pre>
+      <h2>Listing Signatures <code>/api/v1/signatures/</code> <span class="label label-primary">GET</span></h2>
+      <p>Returns a paginated list of signatures.</p>
+      <h3>Example Response</h4>
+      <pre>{
+  "next": "/api/v1/signatures/?page=2",
+  "previous": null,
+  "count": 100,
+  "results": [
+    { 
+      "id": 1,
+      "text_signature": "balanceOf(address)",
+      "bytes_signature": "r'\x13\xf7",
+      "hex_signature": "0x722713f7",
+    },
+    ...
+  ]
+}</pre>
+      <h3>Response Status Codes</h4>
+      <ul>
+        <li><code>200</code> Success</li>
+      </ul>
+      <h3>Filtering Results</h3>
+      <p>The following options are available for filtering the results</p>
+      <h4>Filtering on <code>text_signature</code></h4>
+      <blockquote><code>/api/v1/signatures/?text_signature=balanceOf()</code></blockquote>
+      <p>Exact match on the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__iexact</code></blockquote>
+      <p>Case insensitive exact match on the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__contains</code></blockquote>
+      <p>Substring match on the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__icontains</code></blockquote>
+      <p>Case insensitive substring match on the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__startswith</code></blockquote>
+      <p>Matches on beginning of the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__istartswith</code></blockquote>
+      <p>Case insensitive match on beginning of the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__endswith</code></blockquote>
+      <p>Matches on end of the <code>text_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?text_signature__iendswith</code></blockquote>
+      <p>Case insensitive match on end of the <code>text_signature</code> field.</p>
+      <h4>Filtering on <code>bytes_signature</code></h4>
+      <p>Filters the results base on the <code>bytes_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?bytes_signature=wxyz</code></blockquote>
+      <p>Filters the results base on the <code>bytes_signature</code> field.</p>
+      <ul>
+        <li>If the provided query is exactly 4 bytes long then results are filtered by exact match.</li>
+        <li>If the provided query is less than 4 bytes long then the results are filtered by substring match.</li>
+        <li>If the provided query is longer than 4 bytes then the results are not filtered since it is an invalid query.</li>
+      </ul>
+      <h4>Filtering on <code>hex_signature</code></h4>
+      <p>Filters the results base on the <code>hex_signature</code> field.</p>
+      <blockquote><code>/api/v1/signatures/?hex_signature=0xabcd1234</code></blockquote>
+      <div class="alert alert-info" role="alert">
+        <p>The <code>0x</code> prefix on the query value is optional.</p>
+      </div>
+      <p>
+      <ul>
+        <li>If the provided query is exactly 4 bytes long then results are filtered by exact match.</li>
+        <li>If the provided query is less than 4 bytes long then the results are filtered by substring match.</li>
+        <li>If the provided query is longer than 4 bytes then the results are not filtered since it is an invalid query.</li>
+      </ul>
+      <h2>Creating Signatures <code>/api/v1/signatures/</code> <span class="label label-primary">POST</span></h2>
+      <p>Creates a new signature</p>
+      <h3>Example Request</h3>
+      <pre>{
+      "text_signature": "balanceOf(address)"
+}</pre>
+      <h3>Response Status Codes</h4>
+      <ul>
+        <li><code>200</code> Success</li>
+        <li><code>400</code> Error</li>
+      </ul>
+      <h4>Example Success Response</h3>
+      <p>On success, the serialized record will be returned</p>
+      <pre>{
+  "id": 1,
+  "text_signature": "balanceOf(address)",
+  "bytes_signature": "r'\x13\xf7",
+  "hex_signature": "0x722713f7",
+}</pre>
+      <h3>Accepted Formats for <code>text_signature</code></h3>
+      <p>Function signatures are <strong>normalized</strong> during creation.  The normalization process can handle a wide array of input formats.  Any of the following will normalize to <code>transfer(address,uint256)</code></p>
+      <ul>
+        <li></code>function transfer(address _to, uint _value)</code></li>
+        <li></code>function transfer(address _to, uint256 _value)</code></li>
+        <li></code>transfer(address _to, uint256 _value)</code></li>
+        <li></code>transfer(address _to, uint _value)</code></li>
+        <li></code>transfer(address, uint)</code></li>
+        <li></code>transfer(address, uint256)</code></li>
+        <li></code>transfer ( address, uint256 )</code></li>
+        <li></code>transfer ( address, uint256 )</code></li>
+      </ul>
+      <h3>Example Error Response</h3>
+      <p>When an error occurs, the response will be an object with keys mapping to arrays of error messages.  A <code>400</code> response will be returned if the signature is already present, or if the format of the signature could not be recognized.</p>
+      <pre>{
+      "text_signature": ["Unknown signature format"]
+}</pre>
+      <h2>Retrieving Signatures <code>/api/v1/signatures/:id/</code> <span class="label label-primary">GET</span></h2>
+      <p>You can retrieve an individual signature using this endpoint.</p>
+      <h3>Response Status Codes</h4>
+      <ul>
+        <li><code>200</code> Success</li>
+        <li><code>404</code> Not Found</li>
+      </ul>
+      <h4>Example Success Response</h3>
+      <p>On success, the serialized record will be returned</p>
+      <pre>{
+  "id": 1,
+  "text_signature": "balanceOf(address)",
+  "bytes_signature": "r'\x13\xf7",
+  "hex_signature": "0x722713f7",
+}</pre>
+    </div>
+  </div>
+{% endblock %}
