@@ -114,12 +114,17 @@ class SolidityImportView(generics.GenericAPIView):
         for file_obj in results['source_files']:
             import_results.extend(Signature.import_from_solidity_source(file_obj))
         num_processed = len(import_results)
-        num_imported = sum(tuple(zip(*import_results))[1])
-        num_duplicates = num_processed - num_imported
-        messages.success(
-            self.request._request,
-            "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
-                num_processed, num_imported, num_duplicates,
-            ),
-        )
+        if num_processed == 0:
+            num_imported = 0
+            num_duplicates = 0
+            messages.info(self.request._request, "No function signatures found")
+        else:
+            num_imported = sum(tuple(zip(*import_results))[1])
+            num_duplicates = num_processed - num_imported
+            messages.success(
+                self.request._request,
+                "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
+                    num_processed, num_imported, num_duplicates,
+                ),
+            )
         return redirect('signature-list')
