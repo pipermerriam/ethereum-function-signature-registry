@@ -5,6 +5,8 @@
 {% block content %}
   <div class="row">
     <div class="col-md-12">
+      <h2>Submit Solidity Source Files</h2>
+      <p>Submit solidity source files.  The database will parse out all of the function signatures.  (Hint, you can submit multiple files)</p>
       <form class="form-inline" action="{% url 'import-solidity' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% render_form serializer template_pack='rest_framework/inline' %}
