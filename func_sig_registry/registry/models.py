@@ -29,6 +29,7 @@ class Signature(models.Model):
         unique_together = (
             ('text_signature', 'bytes_signature'),
         )
+        ordering = ('-created_at',)
 
     def save(self, *args, **kwargs):
         if self.bytes_signature_id is None:

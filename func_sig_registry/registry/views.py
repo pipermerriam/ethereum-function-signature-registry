@@ -1,5 +1,9 @@
 from django.shortcuts import redirect
-from django.views.generic import ListView
+from django.contrib import messages
+from django.views.generic import (
+    ListView,
+    TemplateView,
+)
 
 from rest_framework import generics
 from rest_framework.response import Response
@@ -19,6 +23,16 @@ from .forms import (
     SolidityImportForm,
     SignatureSearchForm,
 )
+
+
+class SiteIndexView(TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteIndexView, self).get_context_data(**kwargs)
+        context['serializer'] = SignatureSearchForm()
+        context['total_signatures'] = Signature.objects.count()
+        return context
 
 
 class SignatureListView(SingleTableView, ListView):
@@ -62,8 +76,15 @@ class SignatureCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        serializer.save()
-        return redirect('site-index')
+        signature = serializer.save()
+        messages.success(
+            self.request._request,
+            "Added signature '{0}' for function '{1}'".format(
+                signature.bytes_signature.get_hex_display(),
+                signature.text_signature,
+            ),
+        )
+        return redirect('signature-list')
 
 
 class SolidityImportView(generics.GenericAPIView):
@@ -81,7 +102,17 @@ class SolidityImportView(generics.GenericAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        source_files = serializer.save()
-        for file_obj in source_files:
-            Signature.import_from_solidity_source(file_obj)
-        return redirect('site-index')
+        results = serializer.save()
+        import_results = []
+        for file_obj in results['source_files']:
+            import_results.extend(Signature.import_from_solidity_source(file_obj))
+        num_processed = len(import_results)
+        num_imported = sum(tuple(zip(*import_results))[1])
+        num_duplicates = num_processed - num_imported
+        messages.success(
+            self.request._request,
+            "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
+                num_processed, num_imported, num_duplicates,
+            ),
+        )
+        return redirect('signature-list')

@@ -10,7 +10,9 @@ from func_sig_registry.utils.solidity import (
 
 
 class SignatureSearchForm(serializers.Serializer):
-    bytes4_signature = serializers.CharField()
+    bytes4_signature = serializers.CharField(
+        style={'placeholder': '0x70a08231'},
+    )
 
 
 class SignatureForm(serializers.ModelSerializer):
@@ -56,4 +58,4 @@ class SolidityImportForm(serializers.Serializer):
     source_files = MultiFileField()
 
     def create(self, validated_data):
-        return validated_data['source_files']
+        return validated_data

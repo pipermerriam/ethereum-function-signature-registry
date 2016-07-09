@@ -20,7 +20,8 @@ def test_create_signature(api_client):
     assert response.status_code == status.HTTP_201_CREATED
     data = response.data
     assert data['text_signature'] == 'balanceOf(address)'
-    assert data['bytes_signature'] == '0x70a08231'
+    assert data['bytes_signature'] == 'p\xa0\x821'
+    assert data['hex_signature'] == '0x70a08231'
 
 
 def test_create_duplicate_signature(api_client, factories):
@@ -42,7 +43,8 @@ def test_retrieve_signature(api_client, factories):
 
     assert data['id'] == signature.id
     assert data['text_signature'] == signature.text_signature
-    assert data['bytes_signature'] == signature.bytes_signature.get_hex_display()
+    assert data['bytes_signature'] == signature.bytes_signature.bytes4_signature
+    assert data['hex_signature'] == signature.bytes_signature.get_hex_display()
 
 
 def test_cannot_update_with_put_signature(api_client, factories):

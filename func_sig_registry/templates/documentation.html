@@ -122,13 +122,26 @@
         <li></code>transfer ( address, uint256 )</code></li>
         <li></code>transfer ( address, uint256 )</code></li>
       </ul>
-      <h4>Example Error Response</h3>
-      <p>When an error occurs, the response will be an object with keys mapping to arrays of error messages.</p>
+      <h3>Example Error Response</h3>
+      <p>When an error occurs, the response will be an object with keys mapping to arrays of error messages.  A <code>400</code> response will be returned if the signature is already present, or if the format of the signature could not be recognized.</p>
       <pre>{
       "text_signature": ["Unknown signature format"]
 }</pre>
       <h2>Retrieving Signatures <code>/api/v1/signatures/:id/</code> <span class="label label-primary">GET</span></h2>
-      <p>TOOD</p>
+      <p>You can retrieve an individual signature using this endpoint.</p>
+      <h3>Response Status Codes</h4>
+      <ul>
+        <li><code>200</code> Success</li>
+        <li><code>404</code> Not Found</li>
+      </ul>
+      <h4>Example Success Response</h3>
+      <p>On success, the serialized record will be returned</p>
+      <pre>{
+  "id": 1,
+  "text_signature": "balanceOf(address)",
+  "bytes_signature": "r'\x13\xf7",
+  "hex_signature": "0x722713f7",
+}</pre>
     </div>
   </div>
 {% endblock %}

@@ -8,7 +8,7 @@
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="{% url 'site-index' %}">Ethereum Function Signature Registry</a>
+          <a class="navbar-brand" href="{% url 'site-index' %}">Ethereum Function Signature Database</a>
         </div><!-- /.navbar-header -->	
         <div>
 					<ul class="nav navbar-nav">
@@ -23,6 +23,19 @@
         </div><!-- /.navbar-right -->
       </div><!-- /.container-fluid -->
     </nav>
+    {% block messages %}
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endblock messages %}
     {% block body %}
     {% endblock body %}
   </body>

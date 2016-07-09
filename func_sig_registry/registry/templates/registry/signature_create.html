@@ -4,6 +4,8 @@
 
 {% block content %}
   <div class="row">
+    <h2>Submit a Signature</h2>
+    <p>Submit a new signature for the database.</p>
     <div class="col-md-12">
       <form class="form-inline" action="{% url 'signature-create' %}" method="post" novalidate>
         {% csrf_token %}
