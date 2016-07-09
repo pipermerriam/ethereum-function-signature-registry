@@ -17,6 +17,7 @@ from django.conf.urls import (
     url,
     include,
 )
+from django.views.generic import TemplateView
 from rest_framework import routers
 
 
@@ -37,6 +38,11 @@ urlpatterns = [
     url(r'^$', SignatureListView.as_view(), name='site-index'),
     url(r'^submit/$', SignatureCreateView.as_view(), name='signature-create'),
     url(r'^import-solidity/$', SolidityImportView.as_view(), name='import-solidity'),
+    url(
+        r'^docs/$',
+        TemplateView.as_view(template_name='documentation.html'),
+        name='documentation',
+    ),
 
     # API
     url(r'^api/v1/', include(router.urls, namespace='api')),

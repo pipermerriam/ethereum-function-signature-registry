@@ -9,7 +9,8 @@ def test_serialization(factories):
 
     assert data['id'] == signature.id
     assert data['text_signature'] == signature.text_signature
-    assert data['bytes_signature'] == signature.bytes_signature.get_hex_display()
+    assert data['bytes_signature'] == signature.bytes_signature.bytes4_signature
+    assert data['hex_signature'] == signature.bytes_signature.get_hex_display()
 
 
 @pytest.mark.parametrize(
