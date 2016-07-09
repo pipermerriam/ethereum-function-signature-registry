@@ -18,8 +18,6 @@ from django.conf.urls import (
     include,
 )
 from django.views.generic import TemplateView
-from rest_framework import routers
-
 
 from func_sig_registry.registry.views import (
     SiteIndexView,
@@ -27,13 +25,7 @@ from func_sig_registry.registry.views import (
     SignatureCreateView,
     SolidityImportView,
 )
-from func_sig_registry.registry.api_views import (
-    SignatureViewSet,
-)
 
-
-router = routers.SimpleRouter()
-router.register(r'signatures', SignatureViewSet)
 
 urlpatterns = [
     url(r'^$', SiteIndexView.as_view(), name='site-index'),
@@ -47,5 +39,5 @@ urlpatterns = [
     ),
 
     # API
-    url(r'^api/v1/', include(router.urls, namespace='api')),
+    url(r'^api/v1/', include('func_sig_registry.api_urls', namespace='api')),
 ]
