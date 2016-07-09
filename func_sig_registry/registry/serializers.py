@@ -35,3 +35,26 @@ class SignatureSerializer(serializers.ModelSerializer):
         if not is_canonical_function_signature(signature):
             raise serializers.ValidationError('Signature could not be normalized')
         return signature
+
+
+class SolidityFileSerializer(serializers.Serializer):
+    source_file = serializers.FileField(write_only=True)
+
+    num_processed = serializers.IntegerField(read_only=True)
+    num_imported = serializers.IntegerField(read_only=True)
+    num_duplicates = serializers.IntegerField(read_only=True)
+
+    def create(self, validated_data):
+        import_results = Signature.import_from_solidity_source(validated_data['source_file'])
+        num_processed = len(import_results)
+        if num_processed == 0:
+            num_imported = 0
+            num_duplicates = 0
+        else:
+            num_imported = sum(tuple(zip(*import_results))[1])
+            num_duplicates = num_processed - num_imported
+        return {
+            'num_processed': num_processed,
+            'num_imported': num_imported,
+            'num_duplicates': num_duplicates,
+        }

@@ -9,12 +9,28 @@
       <h1>Authentication</h1>
       <p>There is no authentication necessary to access this API</p>
       <h1>Content Types</h1>
-      <p>All api endpoints accept requests with the following content types.</p>
+      <p>All api endpoints accept requests with the following content types unless specified otherwise.</p>
       <ul>
         <li><code>application/json</code>
         <li><code>application/x-www-form-urlencoded</code>
         <li><code>multipart/form-data</code>
       </ul>
+      <h1>Importing Source Files</h1>
+      <h2>Content Types</h2>
+      <p>File import API endpoints only accept <code>multipart/form-data</code></p>
+      <h2>Solidity Imports <code>{% url 'api:import-solidity' %}</a></code> <span class="label label-primary">POST</span></h2>
+      <p>This endpoint accepts a single solidity source, parses it for function signatures and imports them.</p>
+      <h3>Example Request</h3>
+      <pre>$ curl -F source_file=@/path/to/some/Contract.sol https://www.4byte.directory{% url 'api:import-solidity' %}</pre>
+      <h3>Example Response</h3>
+      <pre>{
+  "num_processed": 21,
+  "num_imported": 3,
+  "num_duplicates": 18
+}</pre>
+      <h3>How to import a bunch of files</h3>
+      <p>If you'd like to import many source files, you can do so with the following command line magic.</p>
+      <pre>$ find /path/to/recursively/search/ -name *.sol | xargs -n 1 -I {} curl -F source_file=@{} https://www.4byte.directory{% url 'api:import-solidity' %}</pre>
       <h1>Signatures</h1>
       <p>The primary data model exposed by the API is the <code>Signature</code>.  Each signature is a mapping between the human readable function signature and the 4-byte function selector used by the EVM.  See the official <a href="https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI#function-selector" target="_blank">Ethereum Contract ABI documentation</a> for more information.</p>
       <p>Each signature object returned from the API has the following fields.</p>
