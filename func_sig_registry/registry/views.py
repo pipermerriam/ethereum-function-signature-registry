@@ -43,7 +43,9 @@ class SignatureListView(SingleTableView, ListView):
     }
 
     def get_queryset(self):
-        queryset = super(SignatureListView, self).get_queryset()
+        queryset = super(SignatureListView, self).get_queryset().select_related(
+            'bytes_signature',
+        )
         if self.request.GET.get('bytes4_signature'):
             hex_signature = self.request.GET['bytes4_signature']
             bytes4_signature = force_text(decode_hex(hex_signature))

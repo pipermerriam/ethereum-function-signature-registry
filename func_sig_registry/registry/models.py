@@ -16,7 +16,7 @@ from func_sig_registry.utils.encoding import (
 
 
 class Signature(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     text_signature = models.TextField(unique=True,

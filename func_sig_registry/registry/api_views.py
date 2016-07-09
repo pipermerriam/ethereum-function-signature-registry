@@ -10,6 +10,6 @@ class SignatureViewSet(mixins.CreateModelMixin,
                        mixins.ListModelMixin,
                        mixins.RetrieveModelMixin,
                        viewsets.GenericViewSet):
-    queryset = Signature.objects.all()
+    queryset = Signature.objects.all().select_related('bytes_signature')
     serializer_class = SignatureSerializer
     filter_class = SignatureFilter
