@@ -48,8 +48,13 @@ class SignatureListView(SingleTableView, ListView):
         )
         if self.request.GET.get('bytes4_signature'):
             hex_signature = self.request.GET['bytes4_signature']
-            bytes4_signature = force_text(decode_hex(hex_signature))
-            return queryset.filter(bytes_signature__bytes4_signature=bytes4_signature)
+            try:
+                bytes4_signature = force_text(decode_hex(hex_signature))
+            except Exception:
+                messages.error(self.request, "Invalid hex string.")
+                pass
+            else:
+                return queryset.filter(bytes_signature__bytes4_signature=bytes4_signature)
         return queryset
 
     def get_context_data(self, **kwargs):
