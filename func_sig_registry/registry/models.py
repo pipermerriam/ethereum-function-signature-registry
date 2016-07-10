@@ -39,9 +39,8 @@ class Signature(models.Model):
         return super(Signature, self).save()
 
     @classmethod
-    def import_from_solidity_source(cls, file_obj):
-        source_code = force_text(file_obj.read())
-        function_signatures_raw = extract_function_signatures(source_code)
+    def import_from_solidity_code(cls, code):
+        function_signatures_raw = extract_function_signatures(code)
         function_signatures_normalized = [
             normalize_function_signature(sig) for sig in function_signatures_raw
         ]
@@ -51,6 +50,11 @@ class Signature(models.Model):
             )
             for text_signature in function_signatures_normalized
         ]
+
+    @classmethod
+    def import_from_solidity_file(cls, file_obj):
+        code = force_text(file_obj.read())
+        return cls.import_from_solidity_code(code)
 
 
 class BytesSignature(models.Model):

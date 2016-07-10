@@ -6,7 +6,7 @@ from .models import Signature
 from .filters import SignatureFilter
 from .serializers import (
     SignatureSerializer,
-    SolidityFileSerializer,
+    SolidityImportSerializer,
 )
 
 
@@ -20,4 +20,4 @@ class SignatureViewSet(mixins.CreateModelMixin,
 
 
 class SolidityImportAPIView(generics.CreateAPIView):
-    serializer_class = SolidityFileSerializer
+    serializer_class = SolidityImportSerializer

@@ -37,15 +37,27 @@ class SignatureSerializer(serializers.ModelSerializer):
         return signature
 
 
-class SolidityFileSerializer(serializers.Serializer):
-    source_file = serializers.FileField(write_only=True)
+class SolidityImportSerializer(serializers.Serializer):
+    source_file = serializers.FileField(write_only=True, required=False)
+    source_code = serializers.CharField(write_only=True, required=False)
 
     num_processed = serializers.IntegerField(read_only=True)
     num_imported = serializers.IntegerField(read_only=True)
     num_duplicates = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
-        import_results = Signature.import_from_solidity_source(validated_data['source_file'])
+        import_results = []
+
+        if validated_data.get('source_file'):
+            import_results.extend(Signature.import_from_solidity_file(
+                validated_data['source_file'],
+            ))
+
+        if validated_data.get('source_code'):
+            import_results.extend(Signature.import_from_solidity_code(
+                validated_data['source_code'],
+            ))
+
         num_processed = len(import_results)
         if num_processed == 0:
             num_imported = 0
