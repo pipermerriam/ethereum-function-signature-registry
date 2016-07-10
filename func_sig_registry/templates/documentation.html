@@ -16,11 +16,13 @@
         <li><code>multipart/form-data</code>
       </ul>
       <h1>Importing Source Files</h1>
-      <h2>Content Types</h2>
-      <p>File import API endpoints only accept <code>multipart/form-data</code></p>
       <h2>Solidity Imports <code>{% url 'api:import-solidity' %}</a></code> <span class="label label-primary">POST</span></h2>
-      <p>This endpoint accepts a single solidity source, parses it for function signatures and imports them.</p>
-      <h3>Example Request</h3>
+      <p>This endpoint either solidity source files or the solidity source code itsel, parses it for function signatures and imports them.</p>
+      <h3>Example Request for Source Import</h3>
+      <pre>{
+  "source_code": "contract Wallet { function withdraw() { msg.sender.send(this.balance); } }"
+}</pre>
+      <h3>Example Request for File Import</h3>
       <pre>$ curl -F source_file=@/path/to/some/Contract.sol https://www.4byte.directory{% url 'api:import-solidity' %}</pre>
       <h3>Example Response</h3>
       <pre>{
@@ -28,6 +30,8 @@
   "num_imported": 3,
   "num_duplicates": 18
 }</pre>
+      <h2>Content Types</h2>
+      <p>When importing files <code>multipart/form-data</code> is accepted.   Otherwise, all content types are accepted.</p>
       <h3>How to import a bunch of files</h3>
       <p>If you'd like to import many source files, you can do so with the following command line magic.</p>
       <pre>$ find /path/to/recursively/search/ -name *.sol | xargs -n 1 -I {} curl -F source_file=@{} https://www.4byte.directory{% url 'api:import-solidity' %}</pre>
