@@ -24,6 +24,7 @@ from func_sig_registry.registry.views import (
     SignatureListView,
     SignatureCreateView,
     SolidityImportView,
+    ImportContractABIView,
 )
 
 
@@ -32,6 +33,7 @@ urlpatterns = [
     url(r'^signatures/$', SignatureListView.as_view(), name='signature-list'),
     url(r'^submit/$', SignatureCreateView.as_view(), name='signature-create'),
     url(r'^import-solidity/$', SolidityImportView.as_view(), name='import-solidity'),
+    url(r'^import-abi/$', ImportContractABIView.as_view(), name='import-abi'),
     url(
         r'^docs/$',
         TemplateView.as_view(template_name='documentation.html'),

@@ -13,3 +13,4 @@ dj-database-url==0.4.1
 django-debug-toolbar==1.4
 gunicorn==19.6.0
 djangorestframework-filters==0.8.0
+jsonschema==2.5.1

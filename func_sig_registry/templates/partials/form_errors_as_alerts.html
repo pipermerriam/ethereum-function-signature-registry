@@ -1,0 +1,7 @@
+{% for key, errors in serializer_errors.items %}
+  {% for error in errors %}
+    <div class="alert alert-danger" role="alert">
+      {{ key }}: {{ error }}
+    </div>
+  {% endfor %}
+{% endfor %}

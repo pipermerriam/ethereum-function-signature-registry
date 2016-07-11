@@ -7,6 +7,7 @@ from func_sig_registry.utils.solidity import (
 )
 from func_sig_registry.utils.abi import (
     make_4byte_signature,
+    function_definition_to_text_signature,
 )
 from func_sig_registry.utils.encoding import (
     encode_hex,
@@ -38,23 +39,40 @@ class Signature(models.Model):
             )
         return super(Signature, self).save()
 
+    #
+    # Import methods
+    #
+    @classmethod
+    def import_from_raw_text_signature(cls, raw_function_signature):
+        text_signature = normalize_function_signature(raw_function_signature)
+        return cls.objects.get_or_create(
+            text_signature=text_signature,
+        )
+
     @classmethod
     def import_from_solidity_code(cls, code):
-        function_signatures_raw = extract_function_signatures(code)
-        function_signatures_normalized = [
-            normalize_function_signature(sig) for sig in function_signatures_raw
-        ]
+        function_signatures = extract_function_signatures(code)
         return [
-            cls.objects.get_or_create(
-                text_signature=text_signature,
-            )
-            for text_signature in function_signatures_normalized
+            cls.import_from_raw_text_signature(raw_signature)
+            for raw_signature in function_signatures
         ]
 
     @classmethod
     def import_from_solidity_file(cls, file_obj):
         code = force_text(file_obj.read())
         return cls.import_from_solidity_code(code)
+
+    @classmethod
+    def import_from_contract_abi(cls, contract_abi):
+        function_signatures = [
+            function_definition_to_text_signature(function_definition)
+            for function_definition in contract_abi
+            if function_definition['type'] == 'function'
+        ]
+        return [
+            cls.import_from_raw_text_signature(raw_signature)
+            for raw_signature in function_signatures
+        ]
 
 
 class BytesSignature(models.Model):
