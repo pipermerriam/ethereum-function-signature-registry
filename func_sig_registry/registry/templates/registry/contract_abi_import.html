@@ -1,0 +1,20 @@
+{% extends 'layout_full.html' %}
+{% load rest_framework %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Submit Contract ABI</h2>
+      <p>Paste the contract ABI definition into the textarea.</p>
+      <form class="form-inline" action="{% url 'import-abi' %}" method="post" enctype="multipart/form-data">
+        {% if serializer_errors %}
+          {% include 'partials/form_errors_as_alerts.html' %}
+        {% endif %}
+        {% csrf_token %}
+        {% render_form serializer template_pack='rest_framework/inline' %}
+        <button type="submit" class="btn btn-default">Submit Contract ABI</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

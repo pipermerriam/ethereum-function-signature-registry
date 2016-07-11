@@ -22,6 +22,7 @@ from .forms import (
     SignatureForm,
     SolidityImportForm,
     SignatureSearchForm,
+    ContractABIForm,
 )
 
 
@@ -127,4 +128,38 @@ class SolidityImportView(generics.GenericAPIView):
                     num_processed, num_imported, num_duplicates,
                 ),
             )
+        return redirect('signature-list')
+
+
+class ImportContractABIView(generics.GenericAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'registry/contract_abi_import.html'
+    serializer_class = ContractABIForm
+
+    def get(self, *args, **kwargs):
+        serializer = self.get_serializer()
+        return Response({
+            'serializer': serializer,
+        })
+
+    def post(self, *args, **kwargs):
+        serializer = self.get_serializer(data=self.request.data)
+
+        if not serializer.is_valid():
+            return Response({
+                'serializer': serializer,
+                'serializer_errors': serializer.errors,
+            })
+        results = serializer.save()
+
+        num_processed = results['num_processed']
+        num_imported = results['num_imported']
+        num_duplicates = results['num_duplicates']
+
+        messages.success(
+            self.request._request,
+            "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
+                num_processed, num_imported, num_duplicates,
+            ),
+        )
         return redirect('signature-list')
