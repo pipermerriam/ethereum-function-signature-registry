@@ -1,8 +1,12 @@
 sudo: false
 language: python
+services:
+  - redis-server
 python:
   - "3.5"
 env:
+  global:
+    - HUEY_REDIS_HOST=localhost
   matrix:
     - TOX_ENV=py35-django19
     - TOX_ENV=flake8
@@ -14,4 +18,3 @@ script:
   - tox -e $TOX_ENV
 after_script:
   - cat .tox/$TOX_ENV/log/*.log
-
