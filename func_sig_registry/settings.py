@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'storages',
     's3_folder_storage',
+    'huey.contrib.djhuey',
 ]
 
 
@@ -214,4 +215,17 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework_filters.backends.DjangoFilterBackend',
     ),
+}
+
+# HUEY
+HUEY = {
+    'name': 'func_sig_registry',
+    'connection': {
+        'host': env.get('HUEY_REDIS_HOST', required=True),
+        'port': env.get('HUEY_REDIS_PORT', type=int, default=6379),
+    },
+    'consumer': {
+        'workers': env.get('HUEY_WORKER_COUNT', type=int, default=2),
+        'worker_type': env.get('HUEY_WORKER_TYPE', default='greenlet'),
+    },
 }

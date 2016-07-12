@@ -14,3 +14,6 @@ django-debug-toolbar==1.4
 gunicorn==19.6.0
 djangorestframework-filters==0.8.0
 jsonschema==2.5.1
+huey==1.1.2
+gevent==1.1.1
+redis==2.10.5

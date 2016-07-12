@@ -110,3 +110,24 @@ class ContractABISerializer(serializers.Serializer):
             'num_imported': num_imported,
             'num_duplicates': num_duplicates,
         }
+
+
+class _OwnerSerializer(serializers.Serializer):
+    name = serializers.CharField()
+
+
+class _RepositorySerializer(serializers.Serializer):
+    name = serializers.CharField()
+    owner = _OwnerSerializer()
+
+
+class _HeadCommitSerializer(serializers.Serializer):
+    id = serializers.CharField()
+
+
+class GithubWebhookSerializer(serializers.Serializer):
+    repository = _RepositorySerializer()
+    head_commit = _HeadCommitSerializer()
+
+    def create(self, validated_data):
+        return validated_data
