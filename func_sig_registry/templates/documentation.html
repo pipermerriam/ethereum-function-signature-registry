@@ -15,6 +15,14 @@
         <li><code>application/x-www-form-urlencoded</code>
         <li><code>multipart/form-data</code>
       </ul>
+      <h1>Github Webhook Integration</h1>
+      <p>The easiest way to help populate the database is with a github webook on your repository.</p>
+      <ul>
+        <li>Under the <strong>Webhooks &amp; Services</strong> section in the repository settings, click the <strong>Add Webhook</strong> button.</li>
+        <li>Use the url: <code>https://www.4byte.directory{% url 'api:github-webhook' %}</code>.</li>
+        <li>Leave all of the other settings as their defaults</li>
+      </ul>
+      <p>Once configured, after each new git push or merged pull request, the site will pull down your codebase and parse all of the solidity files for function signatures</p>
       <h1>Importing Source Files</h1>
       <h2>Solidity Imports <code>{% url 'api:import-solidity' %}</a></code> <span class="label label-primary">POST</span></h2>
       <p>This endpoint either solidity source files or the solidity source code itsel, parses it for function signatures and imports them.</p>
