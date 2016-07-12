@@ -17,3 +17,4 @@ jsonschema==2.5.1
 huey==1.1.2
 gevent==1.1.1
 redis==2.10.5
+requests==2.10.0
