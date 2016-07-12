@@ -38,4 +38,4 @@ class GithubPushWebhookAPIView(generics.CreateAPIView):
         repository = push_data['repository']['name']
         username = push_data['repository']['owner']['name']
         commit = push_data['head_commit']['id']
-        perform_github_import(repository, username, commit)
+        perform_github_import(username, repository, commit)
