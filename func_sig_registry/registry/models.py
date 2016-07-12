@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 
+from func_sig_registry.utils.github import (
+    get_repository_solidity_files,
+)
 from func_sig_registry.utils.solidity import (
     extract_function_signatures,
     normalize_function_signature,
@@ -72,6 +75,14 @@ class Signature(models.Model):
         return [
             cls.import_from_raw_text_signature(raw_signature)
             for raw_signature in function_signatures
+        ]
+
+    @classmethod
+    def import_from_github_repository(cls, username, repository, branch='master'):
+        return [
+            cls.import_from_solidity_file(file_path)
+            for file_path
+            in get_repository_solidity_files(username, repository, branch)
         ]
 
 
