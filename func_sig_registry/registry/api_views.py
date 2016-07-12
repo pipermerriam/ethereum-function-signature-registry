@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import mixins
@@ -11,6 +13,9 @@ from .serializers import (
     ContractABISerializer,
     GithubWebhookSerializer,
 )
+
+
+logger = logging.getLogger()
 
 
 class SignatureViewSet(mixins.CreateModelMixin,
@@ -35,7 +40,10 @@ class GithubPushWebhookAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         push_data = serializer.save()
-        repository = push_data['repository']['name']
         username = push_data['repository']['owner']['name']
+        repository = push_data['repository']['name']
         commit = push_data['head_commit']['id']
+
+        logger.info("Scheduling github fetch for %s/%s/%s", username, repository, commit)
+
         perform_github_import(username, repository, commit)
