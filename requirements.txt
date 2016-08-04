@@ -1,4 +1,4 @@
-Django>=1.9.7,<2.0.0
+Django>=1.9.9,<2.0.0
 django-tables2==1.2.3
 djangorestframework==3.3.3
 ipython==4.2.1
