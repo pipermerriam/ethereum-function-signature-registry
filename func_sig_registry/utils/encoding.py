@@ -4,6 +4,8 @@ import codecs
 def force_bytes(value):
     if isinstance(value, bytes):
         return value
+    elif isinstance(value, memoryview):
+        return bytes(value)
     elif isinstance(value, str):
         return bytes(value, 'latin1')
     else:

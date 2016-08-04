@@ -27,7 +27,10 @@ class Signature(models.Model):
                                       validators=[
                                           MinLengthValidator(3),
                                       ])
-    bytes_signature = models.ForeignKey('registry.BytesSignature')
+    bytes_signature = models.ForeignKey(
+        'registry.BytesSignature',
+        on_delete=models.PROTECT,
+    )
 
     class Meta:
         unique_together = (
@@ -38,7 +41,7 @@ class Signature(models.Model):
     def save(self, *args, **kwargs):
         if self.bytes_signature_id is None:
             self.bytes_signature, _ = BytesSignature.objects.get_or_create(
-                bytes4_signature=force_text(make_4byte_signature(self.text_signature)),
+                bytes4_signature=make_4byte_signature(self.text_signature),
             )
         return super(Signature, self).save()
 
@@ -87,9 +90,10 @@ class Signature(models.Model):
 
 
 class BytesSignature(models.Model):
-    bytes4_signature = models.CharField(max_length=4,
-                                        unique=True,
-                                        validators=[MinLengthValidator(4)])
+    bytes4_signature = models.BinaryField(max_length=4,
+                                          unique=True,
+                                          null=True,
+                                          validators=[MinLengthValidator(4)])
 
     def get_hex_display(self):
         return force_text(encode_hex(force_bytes(self.bytes4_signature)))

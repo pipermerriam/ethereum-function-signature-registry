@@ -2,7 +2,7 @@ import rest_framework_filters as filters
 
 from func_sig_registry.utils.encoding import (
     decode_hex,
-    force_text,
+    force_bytes,
 )
 
 from .models import Signature
@@ -22,13 +22,13 @@ class SignatureFilter(filters.FilterSet):
             # invalid length
             return qs
         elif len(value) == 4:
-            return qs.filter(bytes_signature__bytes4_signature=value)
+            return qs.filter(bytes_signature__bytes4_signature=force_bytes(value))
         else:
-            return qs.filter(bytes_signature__bytes4_signature__icontains=value)
+            return qs.filter(bytes_signature__bytes4_signature__icontains=force_bytes(value))
 
     def filter_hex_signature(self, name, qs, value):
         try:
-            bytes_value = force_text(decode_hex(value))
+            bytes_value = decode_hex(value)
         except Exception:
             return qs
         else:
