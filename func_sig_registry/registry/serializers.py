@@ -19,7 +19,7 @@ class SignatureSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     bytes_signature = serializers.CharField(
-        source='bytes_signature.bytes4_signature',
+        source='bytes_signature.get_bytes_display',
         read_only=True,
     )
 

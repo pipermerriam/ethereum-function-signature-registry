@@ -1,6 +1,10 @@
 import pytest
 from func_sig_registry.registry.serializers import SignatureSerializer
 
+from func_sig_registry.utils.encoding import (
+    force_text,
+)
+
 
 def test_serialization(factories):
     signature = factories.SignatureFactory()
@@ -9,7 +13,7 @@ def test_serialization(factories):
 
     assert data['id'] == signature.id
     assert data['text_signature'] == signature.text_signature
-    assert data['bytes_signature'] == signature.bytes_signature.bytes4_signature
+    assert data['bytes_signature'] == force_text(signature.bytes_signature.bytes4_signature)
     assert data['hex_signature'] == signature.bytes_signature.get_hex_display()
 
 

@@ -1,6 +1,10 @@
 from rest_framework import status
 from django.core.urlresolvers import reverse
 
+from func_sig_registry.utils.encoding import (
+    force_text,
+)
+
 
 def test_list_view(api_client, factories):
     list_url = reverse('api:signature-list')
@@ -43,7 +47,7 @@ def test_retrieve_signature(api_client, factories):
 
     assert data['id'] == signature.id
     assert data['text_signature'] == signature.text_signature
-    assert data['bytes_signature'] == signature.bytes_signature.bytes4_signature
+    assert data['bytes_signature'] == force_text(signature.bytes_signature.bytes4_signature)
     assert data['hex_signature'] == signature.bytes_signature.get_hex_display()
 
 
