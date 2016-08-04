@@ -15,7 +15,6 @@ from func_sig_registry.utils.abi import (
 from func_sig_registry.utils.encoding import (
     encode_hex,
     force_text,
-    force_bytes,
     add_0x_prefix,
     remove_0x_prefix,
 )

@@ -1,7 +1,6 @@
 import rest_framework_filters as filters
 
 from func_sig_registry.utils.encoding import (
-    force_text,
     remove_0x_prefix,
 )
 
