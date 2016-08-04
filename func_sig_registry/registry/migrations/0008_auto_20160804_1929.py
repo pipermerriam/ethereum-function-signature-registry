@@ -3,6 +3,22 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+from sha3 import sha3_256
+
+
+def force_bytes(value):
+    if isinstance(value, bytes):
+        return value
+    elif isinstance(value, memoryview):
+        return bytes(value)
+    elif isinstance(value, str):
+        return bytes(value, 'utf8')
+    else:
+        raise TypeError("Unsupported type: {0}".format(type(value)))
+
+
+def make_4byte_signature(text_signature):
+    return sha3_256(force_bytes(text_signature)).digest()[:4]
 
 
 def populate_bytes4_signature(apps, schema_editor):
@@ -10,7 +26,9 @@ def populate_bytes4_signature(apps, schema_editor):
     BytesSignature = apps.get_model('registry', 'BytesSignature')
 
     for signature in Signature.objects.all():
-        signature.bytes_signature_id = None
+        signature.bytes_signature, _ = BytesSignature.objects.get_or_create(
+            bytes4_signature=make_4byte_signature(signature.text_signature),
+        )
         signature.save()
 
     bytes_signatures_to_remove = BytesSignature.objects.filter(
