@@ -16,6 +16,8 @@ from func_sig_registry.utils.encoding import (
     encode_hex,
     force_text,
     force_bytes,
+    add_0x_prefix,
+    remove_0x_prefix,
 )
 
 
@@ -94,6 +96,18 @@ class BytesSignature(models.Model):
                                           unique=True,
                                           null=True,
                                           validators=[MinLengthValidator(4)])
+    hex_signature = models.CharField(max_length=8,
+                                     unique=True,
+                                     null=True,
+                                     validators=[MinLengthValidator(4)])
+
+    def save(self, *args, **kwargs):
+        if not self.hex_signature:
+            self.hex_signature = force_text(remove_0x_prefix(encode_hex(self.bytes4_signature)))
+        super(BytesSignature, self).save(*args, **kwargs)
 
     def get_hex_display(self):
-        return force_text(encode_hex(force_bytes(self.bytes4_signature)))
+        return force_text(add_0x_prefix(self.hex_signature))
+
+    def get_bytes_display(self):
+        return force_text(self.bytes4_signature)

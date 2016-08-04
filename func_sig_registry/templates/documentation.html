@@ -110,15 +110,6 @@
       <p>Matches on end of the <code>text_signature</code> field.</p>
       <blockquote><code>/api/v1/signatures/?text_signature__iendswith</code></blockquote>
       <p>Case insensitive match on end of the <code>text_signature</code> field.</p>
-      <h4>Filtering on <code>bytes_signature</code></h4>
-      <p>Filters the results base on the <code>bytes_signature</code> field.</p>
-      <blockquote><code>/api/v1/signatures/?bytes_signature=wxyz</code></blockquote>
-      <p>Filters the results base on the <code>bytes_signature</code> field.</p>
-      <ul>
-        <li>If the provided query is exactly 4 bytes long then results are filtered by exact match.</li>
-        <li>If the provided query is less than 4 bytes long then the results are filtered by substring match.</li>
-        <li>If the provided query is longer than 4 bytes then the results are not filtered since it is an invalid query.</li>
-      </ul>
       <h4>Filtering on <code>hex_signature</code></h4>
       <p>Filters the results base on the <code>hex_signature</code> field.</p>
       <blockquote><code>/api/v1/signatures/?hex_signature=0xabcd1234</code></blockquote>

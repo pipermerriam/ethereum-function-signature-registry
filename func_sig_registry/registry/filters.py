@@ -1,8 +1,8 @@
 import rest_framework_filters as filters
 
 from func_sig_registry.utils.encoding import (
-    decode_hex,
-    force_bytes,
+    force_text,
+    remove_0x_prefix,
 )
 
 from .models import Signature
@@ -18,18 +18,15 @@ class SignatureFilter(filters.FilterSet):
         fields = ['text_signature', 'bytes_signature', 'hex_signature']
 
     def filter_bytes_signature(self, name, qs, value):
-        if len(value) > 4:
-            # invalid length
-            return qs
-        elif len(value) == 4:
-            return qs.filter(bytes_signature__bytes4_signature=force_bytes(value))
+        if len(value) == 4:
+            return qs.filter(bytes_signature__bytes4_signature=value)
         else:
-            return qs.filter(bytes_signature__bytes4_signature__icontains=force_bytes(value))
+            return qs
 
     def filter_hex_signature(self, name, qs, value):
-        try:
-            bytes_value = decode_hex(value)
-        except Exception:
-            return qs
+        unprefixed_value = remove_0x_prefix(value.lower())
+
+        if len(value) == 8:
+            return qs.filter(bytes_signature__hex_signature=unprefixed_value)
         else:
-            return self.filter_bytes_signature(name, qs, bytes_value)
+            return qs.filter(bytes_signature__hex_signature__icontains=unprefixed_value)
