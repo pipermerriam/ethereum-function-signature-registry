@@ -1,5 +1,12 @@
 import pytest
 
+from func_sig_registry.utils.encoding import (
+    force_text,
+)
+from func_sig_registry.utils.abi import (
+    make_4byte_signature,
+)
+
 
 @pytest.mark.parametrize(
     'text_signature,bytes4_signature',
@@ -19,9 +26,13 @@ def test_00_prefixed_signatures_result_in_correct_4byte_signature(factories,
                                                                   models,
                                                                   text_signature,
                                                                   bytes4_signature):
-    signature = factories.SignatureFactory(text_signature=text_signature)
+    sig_as_bytes = make_4byte_signature(text_signature)
+    assert force_text(sig_as_bytes) == bytes4_signature
+    signature = models.Signature(text_signature=text_signature)
+    signature.save()
 
+    query = models.BytesSignature.objects.filter(bytes4_signature=sig_as_bytes).query
     bytes_signature = models.BytesSignature.objects.get(pk=signature.bytes_signature_id)
 
-    assert len(bytes_signature.bytes4_signature) == 4
+    assert len(bytes_signature.bytes4_signature) == 4, str(query)
     assert bytes_signature.bytes4_signature == bytes4_signature
