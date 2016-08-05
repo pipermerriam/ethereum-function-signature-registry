@@ -99,7 +99,7 @@ class BytesSignature(models.Model):
                                           validators=[MinLengthValidator(4)])
     hex_signature = models.CharField(max_length=8,
                                      unique=True,
-                                     validators=[MinLengthValidator(4)])
+                                     validators=[MinLengthValidator(8)])
 
     def save(self, *args, **kwargs):
         if not self.hex_signature:
