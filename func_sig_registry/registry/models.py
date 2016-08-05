@@ -41,8 +41,11 @@ class Signature(models.Model):
 
     def save(self, *args, **kwargs):
         if self.bytes_signature_id is None:
+            bytes4_signature = make_4byte_signature(self.text_signature)
+            hex_signature = force_text(remove_0x_prefix(encode_hex(bytes4_signature)))
             self.bytes_signature, _ = BytesSignature.objects.get_or_create(
-                bytes4_signature=make_4byte_signature(self.text_signature),
+                bytes4_signature=bytes4_signature,
+                defaults={'hex_signature': hex_signature},
             )
         return super(Signature, self).save()
 
@@ -93,11 +96,9 @@ class Signature(models.Model):
 class BytesSignature(models.Model):
     bytes4_signature = models.BinaryField(max_length=4,
                                           unique=True,
-                                          null=True,
                                           validators=[MinLengthValidator(4)])
     hex_signature = models.CharField(max_length=8,
                                      unique=True,
-                                     null=True,
                                      validators=[MinLengthValidator(4)])
 
     def save(self, *args, **kwargs):
