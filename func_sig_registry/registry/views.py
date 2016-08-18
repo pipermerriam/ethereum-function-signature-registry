@@ -11,6 +11,10 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 from django_tables2 import SingleTableView
 
+from func_sig_registry.utils.encoding import (
+    remove_0x_prefix,
+)
+
 from .models import Signature
 from .tables import SignatureTable
 from .forms import (
@@ -44,7 +48,16 @@ class SignatureListView(SingleTableView, ListView):
         )
         if self.request.GET.get('bytes4_signature'):
             hex_signature = self.request.GET['bytes4_signature']
-            return queryset.search_bytes4_signature(hex_signature)
+            unprefixed_hex_signature = remove_0x_prefix(hex_signature.lower())
+
+            if len(unprefixed_hex_signature) == 8:
+                return queryset.filter(
+                    bytes_signature__hex_signature=unprefixed_hex_signature,
+                )
+            else:
+                return queryset.filter(
+                    bytes_signature__hex_signature__icontains=unprefixed_hex_signature,  # NOQA
+                )
         return queryset
 
     def get_context_data(self, **kwargs):

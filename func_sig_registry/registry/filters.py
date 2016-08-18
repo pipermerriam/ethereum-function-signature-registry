@@ -25,7 +25,7 @@ class SignatureFilter(filters.FilterSet):
     def filter_hex_signature(self, name, qs, value):
         unprefixed_value = remove_0x_prefix(value.lower())
 
-        if len(value) == 8:
+        if len(unprefixed_value) == 8:
             return qs.filter(bytes_signature__hex_signature=unprefixed_value)
         else:
             return qs.filter(bytes_signature__hex_signature__icontains=unprefixed_value)
