@@ -12,51 +12,77 @@ STATIC_TYPES = list(itertools.chain(
     ['bytes{0}'.format(i) for i in range(1, 33)],
 ))
 
-TYPE_REGEX = '|'.join(itertools.chain(
-    DYNAMIC_TYPES,
-    STATIC_TYPES,
-    STATIC_TYPE_ALIASES,
+TYPE_REGEX = '|'.join((
+    _type + '(?![a-z0-9])'
+    for _type
+    in itertools.chain(STATIC_TYPES, STATIC_TYPE_ALIASES, DYNAMIC_TYPES)
 ))
 
-CANONICAL_TYPE_REGEX = '(' + '|'.join(itertools.chain(
-    DYNAMIC_TYPES,
-    STATIC_TYPES,
-)) + ')'
+CANONICAL_TYPE_REGEX = '|'.join((
+    _type + '(?![a-z0-9])'
+    for _type
+    in itertools.chain(DYNAMIC_TYPES, STATIC_TYPES)
+))
 
-NAME_REGEX = '[a-zA-Z_][a-zA-Z0-9_]*'
+NAME_REGEX = (
+    '[a-zA-Z_]'
+    '[a-zA-Z0-9_]*'
+)
 
-ARGUMENT_REGEX = '(?:{type})(?:(?:\[[0-9]*\])*)?\s+[a-zA-Z_][a-zA-Z0-9_]*'.format(
+SUB_TYPE_REGEX = (
+    '\['
+    '[0-9]*'
+    '\]'
+)
+
+ARGUMENT_REGEX = (
+    '(?:{type})'
+    '(?:(?:{sub_type})*)?'
+    '\s+'
+    '{name}'
+).format(
     type=TYPE_REGEX,
+    sub_type=SUB_TYPE_REGEX,
+    name=NAME_REGEX,
 )
 
 
 RAW_FUNCTION_REGEX = (
-    'function\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(\s*(?:{arg}(?:(?:\s*,\s*{arg}\s*)*)?)?\s*\)'.format(
+    'function\s+{name}\s*\(\s*(?:{arg}(?:(?:\s*,\s*{arg}\s*)*)?)?\s*\)'.format(
+        name=NAME_REGEX,
         arg=ARGUMENT_REGEX,
     )
 )
 
 
-FUNCTION_ARGUMENTS_REGEX = (
-    '(?P<type>{type})(?P<sub_type>(?:\[[0-9]*\])*)?(?:\s+[a-zA-Z_][a-zA-Z0-9_]*)?'.format(
-        type=TYPE_REGEX,
-    )
+FUNCTION_ARGUMENT_TYPES_REGEX = (
+    '(?P<type>{type})'
+    '(?P<sub_type>(?:{sub_type})*)'
+    '(?:\s*)'
+).format(
+    type=TYPE_REGEX,
+    sub_type=SUB_TYPE_REGEX,
+    name=NAME_REGEX,
 )
 
 
 NORM_FUNCTION_REGEX = (
     '^'
-    '[a-zA-Z_][a-zA-Z0-9_]*'
+    '{name}'
     '\('
-    '('
-    '{type}((\[[0-9]*\])*)'
-    '('
-    '(,{type}((\[[0-9]*\])*)?)*'
+    '(?:'
+    '{type}(({sub_type})*)'
+    '(?:'
+    '(,{type}(({sub_type})*)?)*'
     ')?'
     ')?'
     '\)'
     '$'
-).format(type=CANONICAL_TYPE_REGEX)
+).format(
+    name=NAME_REGEX,
+    type=CANONICAL_TYPE_REGEX,
+    sub_type=SUB_TYPE_REGEX,
+)
 
 
 def is_raw_function_signature(signature):
@@ -105,7 +131,7 @@ def normalize_function_signature(raw_signature):
 
     if fn_name == 'function':
         raise ValueError("Bad function name")
-    raw_arguments = re.findall(FUNCTION_ARGUMENTS_REGEX, raw_signature)
+    raw_arguments = re.findall(FUNCTION_ARGUMENT_TYPES_REGEX, raw_signature)
 
     arguments = [
         "".join((to_canonical_type(t), sub))

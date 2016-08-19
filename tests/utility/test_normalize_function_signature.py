@@ -48,6 +48,13 @@ from func_sig_registry.utils.solidity import (
         (' foo(uint256)', 'foo(uint256)'),
         ('foo(uint256) ', 'foo(uint256)'),
         (' foo(uint256) ', 'foo(uint256)'),
+        # bytes32
+        ('foo(bytes32)', 'foo(bytes32)'),
+        ('foo(address[1])', 'foo(address[1])'),
+        ('foo(bytes32[])', 'foo(bytes32[])'),
+        ('foo(uint8[])', 'foo(uint8[])'),
+        ('foo(uint8[][2][][3])', 'foo(uint8[][2][][3])'),
+        ('foo(uint8[][2][][3], uint, bytes32[3][])', 'foo(uint8[][2][][3],uint256,bytes32[3][])'),
     )
 )
 def test_normalizing_function_signatures(raw_signature, expected):
