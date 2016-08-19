@@ -68,18 +68,14 @@ FUNCTION_ARGUMENT_TYPES_REGEX = (
 
 NORM_FUNCTION_REGEX = (
     '^'
-    '{name}'
-    '\('
-    '(?:'
-    '{type}(({sub_type})*)'
-    '(?:'
-    '(,{type}(({sub_type})*)?)*'
+    '{fn_name}\('
+    '('
+    '({type})({sub_type})*'
+    '(,({type})({sub_type})*)*'
     ')?'
-    ')?'
-    '\)'
-    '$'
+    '\)$'
 ).format(
-    name=NAME_REGEX,
+    fn_name=NAME_REGEX,
     type=CANONICAL_TYPE_REGEX,
     sub_type=SUB_TYPE_REGEX,
 )
@@ -93,6 +89,7 @@ def is_raw_function_signature(signature):
 
 
 def is_canonical_function_signature(signature):
+    print(NORM_FUNCTION_REGEX)
     if re.fullmatch(NORM_FUNCTION_REGEX, signature):
         return True
     else:
