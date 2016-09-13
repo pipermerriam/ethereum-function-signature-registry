@@ -26,10 +26,10 @@ class SignatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Signature
         fields = (
-            'id', 'text_signature', 'hex_signature', 'bytes_signature',
+            'id', 'created_at', 'text_signature', 'hex_signature', 'bytes_signature',
         )
         read_only_fields = (
-            'hex_signature', 'bytes_signature',
+            'created_at', 'hex_signature', 'bytes_signature',
         )
 
     def validate_text_signature(self, data):

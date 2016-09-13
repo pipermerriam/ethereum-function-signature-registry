@@ -3,6 +3,7 @@ import logging
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework import filters
 
 from .models import Signature
 from .tasks import perform_github_import
@@ -25,6 +26,8 @@ class SignatureViewSet(mixins.CreateModelMixin,
     queryset = Signature.objects.all().select_related('bytes_signature')
     serializer_class = SignatureSerializer
     filter_class = SignatureFilter
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
+    ordering_fields = ('created_at',)
 
 
 class SolidityImportAPIView(generics.CreateAPIView):

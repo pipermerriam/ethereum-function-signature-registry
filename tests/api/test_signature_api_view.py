@@ -1,5 +1,9 @@
+import datetime
+
 from rest_framework import status
+
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from func_sig_registry.utils.encoding import (
     force_text,
@@ -15,6 +19,50 @@ def test_list_view(api_client, factories):
     data = response.data
     assert data['count'] == 5
     assert len(data['results']) == 5
+
+
+def test_list_view_pagination(api_client, factories):
+    list_url = reverse('api:signature-list')
+    factories.SignatureFactory.create_batch(101)
+
+    response = api_client.get(list_url)
+    assert response.status_code == status.HTTP_200_OK
+    data = response.data
+    assert data['count'] == 101
+    assert len(data['results']) == 100
+
+
+def test_list_view_ordering(api_client, factories):
+    list_url = reverse('api:signature-list')
+
+    ascending_url = list_url + "?ordering=created_at"
+    decending_url = list_url + "?ordering=-created_at"
+
+    factories.SignatureFactory()
+
+    sig_b = factories.SignatureFactory()
+    sig_b.created_at = timezone.now() + datetime.timedelta(1)
+
+    response_a = api_client.get(ascending_url)
+    assert response_a.status_code == status.HTTP_200_OK
+    results_a = response_a.data['results']
+
+    response_b = api_client.get(decending_url)
+    assert response_b.status_code == status.HTTP_200_OK
+    results_b = response_b.data['results']
+
+    assert tuple(v['id'] for v in results_a) == tuple(reversed(tuple(v['id'] for v in results_b)))
+
+
+def test_list_view_pagination_page_size_query_param(api_client, factories):
+    list_url = reverse('api:signature-list') + '?page_size=50'
+    factories.SignatureFactory.create_batch(101)
+
+    response = api_client.get(list_url)
+    assert response.status_code == status.HTTP_200_OK
+    data = response.data
+    assert data['count'] == 101
+    assert len(data['results']) == 50
 
 
 def test_create_signature(api_client):
