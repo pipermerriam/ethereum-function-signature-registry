@@ -8,13 +8,14 @@ from .models import Signature
 
 
 class SignatureFilter(filters.FilterSet):
+    created_at = filters.AllLookupsFilter(name='created_at')
     text_signature = filters.CharFilter(name='text_signature', lookup_type='icontains')
     bytes_signature = filters.MethodFilter()
     hex_signature = filters.MethodFilter()
 
     class Meta:
         model = Signature
-        fields = ['text_signature', 'bytes_signature', 'hex_signature']
+        fields = ['created_at', 'text_signature', 'bytes_signature', 'hex_signature']
 
     def filter_bytes_signature(self, name, qs, value):
         if len(value) == 4:
