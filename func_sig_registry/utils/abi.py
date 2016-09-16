@@ -45,6 +45,9 @@ FUNCTION_SCHEMA = {
         'name': NAME,
     },
     'required': ['constant', 'type', 'inputs', 'outputs', 'name'],
+    'definitions': {
+        'argument': ARGUMENT_SCHEMA,
+    },
 }
 
 EVENT_SCHEMA = {
@@ -55,7 +58,10 @@ EVENT_SCHEMA = {
         'inputs': INPUTS,
         'name': NAME,
     },
-    'required': ['anonymous', 'type', 'inputs', 'name'],
+    'required': ['type', 'inputs', 'name'],
+    'definitions': {
+        'argument': ARGUMENT_SCHEMA,
+    },
 }
 
 CONSTRUCTOR_SCHEMA = {
@@ -65,6 +71,9 @@ CONSTRUCTOR_SCHEMA = {
         'inputs': INPUTS,
     },
     'required': ['type', 'inputs'],
+    'definitions': {
+        'argument': ARGUMENT_SCHEMA,
+    },
 }
 
 CONTRACT_ABI_SCHEMA = {
@@ -80,7 +89,6 @@ CONTRACT_ABI_SCHEMA = {
         'function': FUNCTION_SCHEMA,
         'event': EVENT_SCHEMA,
         'constructor': CONSTRUCTOR_SCHEMA,
-        'argument': ARGUMENT_SCHEMA,
     }
 }
 
