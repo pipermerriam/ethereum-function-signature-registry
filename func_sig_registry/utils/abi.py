@@ -89,6 +89,7 @@ CONTRACT_ABI_SCHEMA = {
         'function': FUNCTION_SCHEMA,
         'event': EVENT_SCHEMA,
         'constructor': CONSTRUCTOR_SCHEMA,
+        'argument': ARGUMENT_SCHEMA,
     }
 }
 
