@@ -29,7 +29,7 @@ def test_is_raw_function_signature_for_valid_signatures(raw_signature):
 @pytest.mark.parametrize(
     'invalid_signature',
     (
-        'foo()',
+        'foo',
         'function 3()',
         'function foo(',
         'function foo)',

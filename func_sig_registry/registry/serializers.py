@@ -113,7 +113,7 @@ class ContractABISerializer(serializers.Serializer):
 
 
 class _OwnerSerializer(serializers.Serializer):
-    name = serializers.CharField()
+    login = serializers.CharField()
 
 
 class _RepositorySerializer(serializers.Serializer):

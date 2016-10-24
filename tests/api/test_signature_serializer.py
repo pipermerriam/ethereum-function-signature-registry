@@ -41,6 +41,7 @@ def test_creation_with_good_signatures(factories, raw_signature, expected):
     (
         'function()',
         '3()',
+        '0x337b1cf9',
     ),
 )
 def test_creation_with_bad_signatures(factories, bad_signature):

@@ -42,3 +42,13 @@ contract Foo {
 def test_extract_function_signatures():
     signatures = extract_function_signatures(CODE)
     assert len(signatures) == 8
+    assert set(signatures) == {
+        'function foo_1()',
+        'function foo_2()',
+        'function foo_3(int a)',
+        'function foo_4(int a)',
+        'function foo_5(int a,\n                   int b,\n                   int c)',
+        'function foo_6 ( int a )',
+        'function foo_7(int a)',
+        'function foo_8(address x)',
+    }
