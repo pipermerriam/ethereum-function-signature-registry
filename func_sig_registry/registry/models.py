@@ -20,10 +20,6 @@ from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
 )
 
-from func_sig_registry.registry.validators import (
-    validate_canonical_function_signature,
-)
-
 
 class Signature(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -41,7 +37,7 @@ class Signature(models.Model):
     def __str__(self):
         return self.text_signature
 
-    def clean_fields(exclude=None):
+    def clean_fields(self, exclude=None):
         try:
             self.text_signature = normalize_function_signature(self.text_signature)
         except ValueError:

@@ -49,5 +49,4 @@ class GithubPushWebhookAPIView(generics.CreateAPIView):
 
         logger.info("Scheduling github fetch for %s/%s/%s", login, repository, commit)
 
-        t
         perform_github_import(login, repository, commit)
