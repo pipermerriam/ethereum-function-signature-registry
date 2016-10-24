@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.core.exceptions import ValidationError
 
 from func_sig_registry.utils.github import (
     get_repository_solidity_files,
@@ -32,6 +33,15 @@ class Signature(models.Model):
         'registry.BytesSignature',
         on_delete=models.PROTECT,
     )
+
+    def __str__(self):
+        return self.text_signature
+
+    def clean_fields(self, exclude=None):
+        try:
+            self.text_signature = normalize_function_signature(self.text_signature)
+        except ValueError:
+            raise ValidationError('Unknown signature format')
 
     class Meta:
         unique_together = (
@@ -85,9 +95,9 @@ class Signature(models.Model):
         ]
 
     @classmethod
-    def import_from_github_repository(cls, username, repository, branch='master'):
+    def import_from_github_repository(cls, login, repository, branch='master'):
         results = []
-        for file_path in get_repository_solidity_files(username, repository, branch):
+        for file_path in get_repository_solidity_files(login, repository, branch):
             with open(file_path) as solidity_file:
                 results.append(cls.import_from_solidity_file(solidity_file))
         return results

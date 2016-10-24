@@ -60,3 +60,14 @@ from func_sig_registry.utils.solidity import (
 def test_normalizing_function_signatures(raw_signature, expected):
     actual = normalize_function_signature(raw_signature)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    'raw_signature',
+    (
+        '0x337b1cf9',
+    )
+)
+def test_bad_signatures(raw_signature):
+    with pytest.raises(ValueError):
+        normalize_function_signature(raw_signature)

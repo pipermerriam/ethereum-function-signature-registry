@@ -47,6 +47,21 @@ ARGUMENT_REGEX = (
 )
 
 
+def extract_function_name(raw_signature):
+    fn_name_match = re.match(
+        '^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\(.*\).*$',
+        raw_signature,
+        flags=re.DOTALL,
+    )
+    if fn_name_match is None:
+        raise ValueError("Did not match function name")
+    group_dict = fn_name_match.groupdict()
+    fn_name = group_dict['fn_name']
+    if fn_name == 'function':
+        raise ValueError("Bad function name")
+    return fn_name
+
+
 RAW_FUNCTION_REGEX = (
     'function\s+{name}\s*\(\s*(?:{arg}(?:(?:\s*,\s*{arg}\s*)*)?)?\s*\)'.format(
         name=NAME_REGEX,
@@ -55,15 +70,25 @@ RAW_FUNCTION_REGEX = (
 )
 
 
-FUNCTION_ARGUMENT_TYPES_REGEX = (
-    '(?P<type>{type})'
-    '(?P<sub_type>(?:{sub_type})*)'
-    '(?:\s*)'
-).format(
-    type=TYPE_REGEX,
-    sub_type=SUB_TYPE_REGEX,
-    name=NAME_REGEX,
-)
+def is_raw_function_signature(signature):
+    match = re.fullmatch('^' + RAW_FUNCTION_REGEX + '$', signature)
+    if match:
+        try:
+            extract_function_name(signature)
+        except ValueError:
+            return False
+        else:
+            return True
+    else:
+        return False
+
+
+def extract_function_signatures(code):
+    """
+    Given a string of solidity code, extract all of the function declarations.
+    """
+    matches = re.findall(RAW_FUNCTION_REGEX, code)
+    return matches or []
 
 
 NORM_FUNCTION_REGEX = (
@@ -81,27 +106,11 @@ NORM_FUNCTION_REGEX = (
 )
 
 
-def is_raw_function_signature(signature):
-    if re.fullmatch('^' + RAW_FUNCTION_REGEX + '$', signature):
-        return True
-    else:
-        return False
-
-
 def is_canonical_function_signature(signature):
-    print(NORM_FUNCTION_REGEX)
     if re.fullmatch(NORM_FUNCTION_REGEX, signature):
         return True
     else:
         return False
-
-
-def extract_function_signatures(code):
-    """
-    Given a string of solidity code, extract all of the function declarations.
-    """
-    matches = re.findall(RAW_FUNCTION_REGEX, code)
-    return matches or []
 
 
 def to_canonical_type(value):
@@ -115,19 +124,19 @@ def to_canonical_type(value):
         return value
 
 
-def normalize_function_signature(raw_signature):
-    fn_name_match = re.match(
-        '^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\(.*\).*$',
-        raw_signature,
-        flags=re.DOTALL,
-    )
-    if fn_name_match is None:
-        raise ValueError("Did not match function name")
-    group_dict = fn_name_match.groupdict()
-    fn_name = group_dict['fn_name']
+FUNCTION_ARGUMENT_TYPES_REGEX = (
+    '(?P<type>{type})'
+    '(?P<sub_type>(?:{sub_type})*)'
+    '(?:\s*)'
+).format(
+    type=TYPE_REGEX,
+    sub_type=SUB_TYPE_REGEX,
+    name=NAME_REGEX,
+)
 
-    if fn_name == 'function':
-        raise ValueError("Bad function name")
+
+def normalize_function_signature(raw_signature):
+    fn_name = extract_function_name(raw_signature)
     raw_arguments = re.findall(FUNCTION_ARGUMENT_TYPES_REGEX, raw_signature)
 
     arguments = [

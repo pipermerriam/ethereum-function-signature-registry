@@ -30,7 +30,7 @@ class SignatureForm(serializers.ModelSerializer):
         fields = ('id', 'text_signature', 'bytes4_signature')
         read_only_fields = ('bytes4_signature',)
 
-    def validate_signature(self, value):
+    def validate_text_signature(self, value):
         return normalize_function_signature(value)
 
 

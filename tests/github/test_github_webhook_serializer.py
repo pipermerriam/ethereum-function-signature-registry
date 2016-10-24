@@ -73,7 +73,7 @@ EXAMPLE_PAYLOAD = {
         "name": "public-repo",
         "full_name": "baxterthehacker/public-repo",
         "owner": {
-            "name": "baxterthehacker",
+            "login": "baxterthehacker",
             "email": "baxterthehacker@users.noreply.github.com"
         },
         "private": False,
@@ -174,5 +174,5 @@ def test_serializer_extracts_correct_data():
     repo_data = serializer.save()
 
     assert repo_data['repository']['name'] == 'public-repo'
-    assert repo_data['repository']['owner']['name'] == 'baxterthehacker'
+    assert repo_data['repository']['owner']['login'] == 'baxterthehacker'
     assert repo_data['head_commit']['id'] == '0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c'
