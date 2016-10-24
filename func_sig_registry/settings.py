@@ -74,6 +74,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'func_sig_registry.urls'
@@ -229,4 +230,13 @@ HUEY = {
         'workers': env.get('HUEY_WORKER_COUNT', type=int, default=2),
         'worker_type': env.get('HUEY_WORKER_TYPE', default='greenlet'),
     },
+}
+
+
+# Rollbar
+ROLLBAR = {
+    'access_token': env.get('ROLLBAR_ACCESS_TOKEN', required=not DEBUG),
+    'environment': env.get('ROLLBAR_ENVIRONMENT', required=not DEBUG),
+    'branch': 'master',
+    'root': BASE_DIR,
 }
