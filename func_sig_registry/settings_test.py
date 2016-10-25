@@ -9,5 +9,7 @@ os.environ.setdefault(
     'DATABASE_URL',
     'postgres://{user}@localhost/func_sig_registry'.format(user=getpass.getuser()),
 )
+os.environ.setdefault('ROLLBAR_ACCESS_TOKEN', 'not-a-real-access-token')
+os.environ.setdefault('ROLLBAR_ENVIRONMENT', 'test')
 
 from .settings import *  # NOQA

@@ -113,7 +113,13 @@ class ContractABISerializer(serializers.Serializer):
 
 
 class _OwnerSerializer(serializers.Serializer):
-    login = serializers.CharField()
+    login = serializers.CharField(required=False)
+    name = serializers.CharField(required=False)
+
+    def validate(self, data):
+        if not data.get('login') and not data.get('name'):
+            raise serializers.ValidationError("`name` or `login` are required")
+        return data
 
 
 class _RepositorySerializer(serializers.Serializer):
