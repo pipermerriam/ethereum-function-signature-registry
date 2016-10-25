@@ -121,6 +121,7 @@ class _OwnerSerializer(serializers.Serializer):
             raise serializers.ValidationError("`name` or `login` are required")
         return data
 
+
 class _RepositorySerializer(serializers.Serializer):
     name = serializers.CharField()
     owner = _OwnerSerializer()
