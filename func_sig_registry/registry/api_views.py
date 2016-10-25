@@ -43,10 +43,18 @@ class GithubPushWebhookAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         push_data = serializer.save()
-        login = push_data['repository']['owner']['login']
+        login = push_data['repository']['owner'].get('login')
+        name = push_data['repository']['owner'].get('name')
         repository = push_data['repository']['name']
         commit = push_data['head_commit']['id']
 
-        logger.info("Scheduling github fetch for %s/%s/%s", login, repository, commit)
+        login_or_name = login or name
 
-        perform_github_import(login, repository, commit)
+        logger.info(
+            "Scheduling github fetch for %s/%s/%s",
+            login_or_name,
+            repository,
+            commit,
+        )
+
+        perform_github_import(login_or_name, repository, commit)

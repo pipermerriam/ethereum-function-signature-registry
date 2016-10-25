@@ -95,9 +95,9 @@ class Signature(models.Model):
         ]
 
     @classmethod
-    def import_from_github_repository(cls, login, repository, branch='master'):
+    def import_from_github_repository(cls, login_or_name, repository, branch='master'):
         results = []
-        for file_path in get_repository_solidity_files(login, repository, branch):
+        for file_path in get_repository_solidity_files(login_or_name, repository, branch):
             with open(file_path) as solidity_file:
                 results.append(cls.import_from_solidity_file(solidity_file))
         return results
