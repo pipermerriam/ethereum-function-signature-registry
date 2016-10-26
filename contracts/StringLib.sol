@@ -14,13 +14,13 @@ library StringLib {
         return true;
     }
 
-    function concatByte(string storage value, bytes1 b) internal returns (bool) {
+    function concatByte(string storage value, bytes1 b) returns (bool) {
         bytes memory _b = new bytes(1);
         _b[0] = b;
         return concat(value, string(_b));
     }
 
-    function concat(string storage value, uint n) returns (bool) {
+    function concatUInt(string storage value, uint n) returns (bool) {
         if (n == 0) {
             return concatByte(value, byte(48));
         }

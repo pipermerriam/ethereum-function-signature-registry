@@ -23,6 +23,6 @@ contract TestStringLib {
     }
 
     function concatUInt(uint v) public returns (bool) {
-        return value.concat(v);
+        return value.concatUInt(v);
     }
 }

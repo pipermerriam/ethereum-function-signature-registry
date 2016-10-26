@@ -102,3 +102,23 @@ def test_string_lib(chain):
 @pytest.fixture()
 def TestStringLib(test_string_lib):
     return type(test_string_lib)
+
+
+@pytest.fixture()
+def test_array_lib(chain):
+    return chain.get_contract('TestArrayLib')
+
+
+@pytest.fixture()
+def TestArrayLib(test_array_lib):
+    return type(test_array_lib)
+
+
+@pytest.fixture()
+def test_argument_lib(chain):
+    return chain.get_contract('TestArgumentLib')
+
+
+@pytest.fixture()
+def TestArgumentLib(test_argument_lib):
+    return type(test_argument_lib)
