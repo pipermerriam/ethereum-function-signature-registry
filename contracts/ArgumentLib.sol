@@ -26,6 +26,11 @@ library ArgumentLib {
         string repr;
     }
 
+    function serialize(Argument storage self) returns (uint dataType,
+                                                       uint sub) {
+        return (uint(self.dataType), self.sub);
+    }
+
     function toString(Argument storage self) returns (bool) {
         if (!isValid(self)) {
             return false;

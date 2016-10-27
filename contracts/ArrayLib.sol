@@ -28,4 +28,9 @@ library ArrayLib {
         }
         self.repr.concat("]");
     }
+
+    function serialize(Array storage self) returns (bool isDynamic,
+                                                    uint size) {
+        return (self.isDynamic, self.size);
+    }
 }

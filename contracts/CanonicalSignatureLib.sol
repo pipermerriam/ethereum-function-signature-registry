@@ -1,5 +1,6 @@
 pragma solidity ^0.4.0;
 
+import {MathLib} from "contracts/MathLib.sol";
 import {CharLib} from "contracts/CharLib.sol";
 import {StringLib} from "contracts/StringLib.sol";
 import {ArrayLib} from "contracts/ArrayLib.sol";
@@ -7,6 +8,7 @@ import {ArgumentLib} from "contracts/ArgumentLib.sol";
 
 
 library CanonicalSignatureLib {
+    using MathLib for uint[];
     using CharLib for bytes1;
     using StringLib for string;
     using ArrayLib for ArrayLib.Array;
@@ -30,6 +32,7 @@ library CanonicalSignatureLib {
                   string _name,
                   uint[] dataTypes,
                   uint[] subs,
+                  uint[] arrListLengths,
                   bool[] arrListsDynamic,
                   uint[] arrListsSize) returns (bool) {
         reset(self);
@@ -37,10 +40,10 @@ library CanonicalSignatureLib {
         if (dataTypes.length != subs.length) {
             // invariant
             return false;
-        } else if (subs.length == 0 && arrListsDynamic.length != 0) {
+        } else if (subs.length != arrListLengths.length) {
             // invariant
             return false;
-        } else if (subs.length > 0 && arrListsDynamic.length % subs.length != 0) {
+        } else if (arrListsDynamic.length != arrListLengths.sum()) {
             // invariant
             return false;
         } else if (arrListsDynamic.length != arrListsSize.length) {
@@ -50,6 +53,7 @@ library CanonicalSignatureLib {
         
         uint i;
         uint j;
+        uint offset;
 
         self.name = _name;
 
@@ -61,13 +65,15 @@ library CanonicalSignatureLib {
             self.arguments[i].repr = '';
             self.arguments[i].arrList.length = 0;
 
-            for (j = 0; j < arrListsDynamic.length / subs.length; j++) {
+            for (j = 0; j < arrListLengths[i]; j++) {
                 self.arguments[i].arrList.push(ArrayLib.Array({
-                    isDynamic: arrListsDynamic[i * subs.length + j],
-                    size: arrListsSize[i * subs.length + j],
+                    isDynamic: arrListsDynamic[offset + j],
+                    size: arrListsSize[offset + j],
                     repr: ''
                 }));
             }
+
+            offset += arrListLengths[i];
         }
     }
 

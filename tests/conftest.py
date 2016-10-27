@@ -95,6 +95,16 @@ def test_contract_factories(project):
 
 
 @pytest.fixture()
+def signature_db(chain):
+    return chain.get_contract('SignatureDB')
+
+
+@pytest.fixture()
+def SignatureDB(signature_db):
+    return type(signature_db)
+
+
+@pytest.fixture()
 def test_string_lib(chain):
     return chain.get_contract('TestStringLib')
 
