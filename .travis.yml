@@ -12,6 +12,7 @@ env:
     - SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-0.3.6/solc"
   matrix:
     - TOX_ENV=py35-django19
+    - TOX_ENV=py35-contracts
     - TOX_ENV=flake8
 cache:
   - pip: true
