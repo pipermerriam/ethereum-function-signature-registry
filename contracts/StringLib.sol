@@ -1,12 +1,16 @@
 pragma solidity ^0.4.0;
 
-library StringLib {
-    function concat(string storage _head, string _tail) returns (bool) {
-        bytes head = bytes(_head);
-        bytes memory tail = bytes(_tail);
+import {CharLib} from "contracts/CharLib.sol";
 
-        for (uint i = 0; i < tail.length; i++) {
-            head.push(tail[i]);
+
+library StringLib {
+    using CharLib for bytes1;
+
+    function concat(string storage _head, string tail) returns (bool) {
+        bytes head = bytes(_head);
+
+        for (uint i = 0; i < bytes(tail).length; i++) {
+            head.push(bytes(tail)[i]);
         }
 
         _head = string(head);
@@ -37,6 +41,16 @@ library StringLib {
             concatByte(value, byte(n / 10 ** (exp - i) + 48));
             n %= 10 ** (exp - i);
         }
+        return true;
+    }
+
+    function isAlphaNumeric(string value) constant returns (bool) {
+        for (uint i = 0; i < bytes(value).length; i++) {
+            if (!bytes(value)[i].isAlphaNumeric() && !bytes(value)[i].isUnderscore()) {
+                return false;
+            }
+        }
+
         return true;
     }
 }

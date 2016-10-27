@@ -122,3 +122,13 @@ def test_argument_lib(chain):
 @pytest.fixture()
 def TestArgumentLib(test_argument_lib):
     return type(test_argument_lib)
+
+
+@pytest.fixture()
+def test_canonical_signature_lib(chain):
+    return chain.get_contract('TestCanonicalSignatureLib')
+
+
+@pytest.fixture()
+def TestCanonicalSignatureLib(test_canonical_signature_lib):
+    return type(test_canonical_signature_lib)

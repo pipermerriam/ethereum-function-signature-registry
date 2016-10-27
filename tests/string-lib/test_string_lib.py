@@ -1,3 +1,5 @@
+import string
+
 import pytest
 from hypothesis import (
     given,
@@ -48,3 +50,33 @@ def test_fuzzing_uint_concatenation(chain, test_string_lib, initial_value, tail)
     expected = force_text(initial_value) + str(tail)
 
     assert test_string_lib.call().value() == expected
+
+
+ALPHA_NUMERIC_CHARS = set('_' + string.digits + string.ascii_letters)
+
+
+def test_char_lib(char_lib):
+    for character in map(chr, range(256)):
+        is_digit = character in string.digits
+        is_alpha = character in string.ascii_letters
+        is_lower = character in string.ascii_lowercase
+        is_upper = character in string.ascii_uppercase
+        is_underscore = character == "_"
+        is_alpha_numeric = is_alpha or is_digit
+
+        assert char_lib.call().isUnderscore(character) is is_underscore
+        assert char_lib.call().isAlpha(character) is is_alpha
+        assert char_lib.call().isDigit(character) is is_digit
+        assert char_lib.call().isAlphaLower(character) is is_lower
+        assert char_lib.call().isAlphaUpper(character) is is_upper
+        assert char_lib.call().isAlphaNumeric(character) is is_alpha_numeric
+
+
+@given(binary_text=st.binary())
+def test_stringlib_alpha_numeric(string_lib, binary_text):
+    text = force_text(binary_text)
+    is_alpha_numeric = all((
+        c in ALPHA_NUMERIC_CHARS for c in text
+    ))
+
+    assert string_lib.call().isAlphaNumeric(text) is is_alpha_numeric
