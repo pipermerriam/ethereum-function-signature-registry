@@ -17,8 +17,8 @@ The project currently consists of two primary components:
 
 First install the relevant system dependencies.
 
-* OSX: `brew install pkg-config libffi autoconf automake libtool openssl`
-* Linux: `sudo apt-get install libssl-dev`
+* OSX: `brew install pkg-config libffi autoconf automake libtool openssl postgres`
+* Linux: `sudo apt-get install libssl-dev postgresql postgresql-contrib`
 
 There are two primary test suites located under the [`./tests/`](./tests/)
 directory.
