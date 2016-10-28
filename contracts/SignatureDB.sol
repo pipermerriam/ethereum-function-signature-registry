@@ -1,13 +1,14 @@
 pragma solidity ^0.4.0;
 
 
+import {SignatureDBInterface} from "contract/SignatureDBInterface.sol";
 import {CanonicalSignatureLib} from "contracts/CanonicalSignatureLib.sol";
 import {ArgumentLib} from "contracts/ArgumentLib.sol";
 import {ArrayLib} from "contracts/ArrayLib.sol";
 
 
 
-contract SignatureDB {
+contract SignatureDB is SignatureDBInterface{
     using CanonicalSignatureLib for CanonicalSignatureLib.CanonicalSignature;
     using ArgumentLib for ArgumentLib.Argument;
     using ArrayLib for ArrayLib.Array;
@@ -24,46 +25,44 @@ contract SignatureDB {
     // 4byte selector => signatureID[] array
     mapping (bytes4 => bytes32[]) selectorToSignatureHashes;
 
-    event SignatureAdded(bytes32 indexed signatureHash);
-
     /*
      * ------------------------------------:
      * addSignature(...) argument examples :
      * ------------------------------------:
      *  foo() -> _name: 'foo'
-     *           dataTypes: [],
-     *           subs: [],
-     *           arrListLengths: [],
-     *           arrListsDynamic: [],
-     *           arrListsSize: [],
+     *           dataTypes: []
+     *           subs: []
+     *           arrListLengths: []
+     *           arrListsDynamic: []
+     *           arrListsSize: []
      *
      *  foo(bytes32) -> _name: 'foo'
-     *                  dataTypes: [ArgumentLib.DataType.BytesFixed],
-     *                  subs: [32],
-     *                  arrListLengths: [0],
-     *                  arrListsDynamic: [],
-     *                  arrListsSize: [],
+     *                  dataTypes: [ArgumentLib.DataType.BytesFixed]
+     *                  subs: [32]
+     *                  arrListLengths: [0]
+     *                  arrListsDynamic: []
+     *                  arrListsSize: []
      *
      *  foo(bytes32,uint256) -> _name: 'foo'
      *                          dataTypes: [
      *                              ArgumentLib.DataType.BytesFixed,
      *                              ArgumentLib.DataType.UInt,
-     *                          ],
-     *                          subs: [32, 256],
-     *                          arrListLengths: [0, 0],
-     *                          arrListsDynamic: [],
-     *                          arrListsSize: [],
+     *                          ]
+     *                          subs: [32, 256]
+     *                          arrListLengths: [0, 0]
+     *                          arrListsDynamic: []
+     *                          arrListsSize: []
      *
      *  foo(bytes32,bool[][2],uint256) -> _name: 'foo'
      *                                    dataTypes: [
      *                                        ArgumentLib.DataType.BytesFixed,
      *                                        ArgumentLib.DataType.Bool,
      *                                        ArgumentLib.DataType.UInt,
-     *                                    ],
-     *                                    subs: [32, 0, 256],
-     *                                    arrListLengths: [0, 2, 0],
-     *                                    arrListsDynamic: [true, false],
-     *                                    arrListsSize: [0, 2],
+     *                                    ]
+     *                                    subs: [32, 0, 256]
+     *                                    arrListLengths: [0, 2, 0]
+     *                                    arrListsDynamic: [true, false]
+     *                                    arrListsSize: [0, 2]
      */
     /// @dev Adds a new signature to the database
     /// @param _name String the fn name.
