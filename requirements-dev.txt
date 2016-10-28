@@ -5,3 +5,4 @@ WebTest==2.0.21
 factory-boy==2.7.0
 populus==1.4.0
 hypothesis==3.5.3
+tox==2.4.1
