@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
 
-import {SignatureDBInterface} from "contract/SignatureDBInterface.sol";
+import {SignatureDBInterface} from "contracts/SignatureDBInterface.sol";
 import {CanonicalSignatureLib} from "contracts/CanonicalSignatureLib.sol";
 import {ArgumentLib} from "contracts/ArgumentLib.sol";
 import {ArrayLib} from "contracts/ArrayLib.sol";

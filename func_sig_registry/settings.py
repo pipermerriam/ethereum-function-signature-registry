@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'storages',
     's3_folder_storage',
     'huey.contrib.djhuey',
+    'corsheaders',
 ]
 
 
@@ -68,6 +69,7 @@ if DJANGO_DEBUG_TOOLBAR_ENABLED:
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -240,3 +242,11 @@ ROLLBAR = {
     'branch': 'master',
     'root': BASE_DIR,
 }
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+)
