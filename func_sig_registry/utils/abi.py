@@ -1,4 +1,4 @@
-from sha3 import keccak_256
+from sha3 import sha3_256
 
 from jsonschema import (
     validate,
@@ -7,12 +7,12 @@ from jsonschema import (
 
 
 # sanity check we are using the right sha3 function
-assert keccak_256(b'').hexdigest() == 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470', keccak_256(b'').hexdigest()  # NOQA
+assert sha3_256(b'').hexdigest() == 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470', sha3_256(b'').hexdigest()  # NOQA
 
 
 def make_4byte_signature(text_signature):
     from .encoding import force_bytes
-    return keccak_256(force_bytes(text_signature)).digest()[:4]
+    return sha3_256(force_bytes(text_signature)).digest()[:4]
 
 
 ARGUMENT_SCHEMA = {
