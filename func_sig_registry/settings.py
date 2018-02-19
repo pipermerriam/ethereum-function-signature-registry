@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import urllib.parse
 
 import dj_database_url
 import excavator as env
@@ -220,13 +221,16 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+redis_url_parts = urllib.parse.urlparse(env.get('REDIS_URL'))
+
 # HUEY
 HUEY = {
     'name': 'func_sig_registry',
     'connection': {
-        'host': env.get('HUEY_REDIS_HOST', required=True),
-        'port': env.get('HUEY_REDIS_PORT', type=int, default=6379),
-        'password': env.get('HUEY_REDIS_PASSWORD', default=None),
+        'host': redis_url_parts.hostname,
+        'port': int(redis_url_parts.port),
+        'password': redis_url_parts.password,
     },
     'consumer': {
         'workers': env.get('HUEY_WORKER_COUNT', type=int, default=2),
