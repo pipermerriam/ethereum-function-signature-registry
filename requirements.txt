@@ -8,7 +8,7 @@ django-storages==1.4.1
 boto==2.41.0
 env-excavator==1.5.0
 python-dotenv==0.5.1
-psycopg2==2.6.2
+psycopg2==2.7.4
 dj-database-url==0.4.1
 django-debug-toolbar==1.4
 gunicorn==19.6.0
