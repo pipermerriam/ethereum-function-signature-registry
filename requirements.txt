@@ -2,7 +2,7 @@ Django>=1.9.9,<2.0.0
 django-tables2==1.2.3
 djangorestframework==3.3.3
 ipython==5.1.0
-pysha3==0.3
+pysha3==1.0.2
 django-s3-folder-storage==0.3
 django-storages==1.4.1
 boto==2.41.0
