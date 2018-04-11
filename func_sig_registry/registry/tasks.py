@@ -1,11 +1,19 @@
 import logging
+import sys
 
 from huey.contrib.djhuey import db_task
 
 from .models import Signature
 
 
-logger = logging.getLogger()
+logger = logging.getLogger('bytes4.github_import')
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 @db_task()
