@@ -117,7 +117,10 @@ class Signature(models.Model):
         for file_path in get_repository_solidity_files(login_or_name, repository, branch):
             logger.info("importing solidity file: %s", file_path)
             with open(file_path) as solidity_file:
-                cls.import_from_solidity_file(solidity_file)
+                try:
+                    cls.import_from_solidity_file(solidity_file)
+                except UnicodeDecodeError:
+                    logger.error('unicode error reading solidity file: %s', file_path)
 
 
 class BytesSignature(models.Model):
