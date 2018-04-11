@@ -110,12 +110,10 @@ class Signature(models.Model):
 
     @classmethod
     def import_from_github_repository(cls, login_or_name, repository, branch='master'):
-        results = []
         for file_path in get_repository_solidity_files(login_or_name, repository, branch):
             logger.info("importing solidity file: %s", file_path)
             with open(file_path) as solidity_file:
-                results.append(cls.import_from_solidity_file(solidity_file))
-        return results
+                cls.import_from_solidity_file(solidity_file)
 
 
 class BytesSignature(models.Model):
