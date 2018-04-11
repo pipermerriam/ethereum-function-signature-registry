@@ -77,11 +77,15 @@ class Signature(models.Model):
     #
     @classmethod
     def import_from_raw_text_signature(cls, raw_function_signature):
-        text_signature = normalize_function_signature(raw_function_signature)
-        logger.info("importing signature: %s", text_signature)
-        return cls.objects.get_or_create(
-            text_signature=text_signature,
-        )
+        try:
+            text_signature = normalize_function_signature(raw_function_signature)
+        except ValueError:
+            logger.error("error signature: %s", raw_function_signature)
+        else:
+            logger.info("importing signature: %s", text_signature)
+            return cls.objects.get_or_create(
+                text_signature=text_signature,
+            )
 
     @classmethod
     def import_from_solidity_code(cls, code):
