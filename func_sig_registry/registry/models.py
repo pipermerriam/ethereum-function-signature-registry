@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.core.exceptions import ValidationError
@@ -19,6 +22,16 @@ from func_sig_registry.utils.encoding import (
     add_0x_prefix,
     remove_0x_prefix,
 )
+
+
+logger = logging.getLogger('bytes4.models')
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 class Signature(models.Model):
@@ -65,6 +78,7 @@ class Signature(models.Model):
     @classmethod
     def import_from_raw_text_signature(cls, raw_function_signature):
         text_signature = normalize_function_signature(raw_function_signature)
+        logger.info("importing signature: %s", text_signature)
         return cls.objects.get_or_create(
             text_signature=text_signature,
         )
@@ -98,6 +112,7 @@ class Signature(models.Model):
     def import_from_github_repository(cls, login_or_name, repository, branch='master'):
         results = []
         for file_path in get_repository_solidity_files(login_or_name, repository, branch):
+            logger.info("importing solidity file: %s", file_path)
             with open(file_path) as solidity_file:
                 results.append(cls.import_from_solidity_file(solidity_file))
         return results
