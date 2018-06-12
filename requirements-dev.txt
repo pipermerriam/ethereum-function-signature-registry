@@ -3,6 +3,8 @@ pytest-django==2.9.1
 django-webtest==1.7.9
 WebTest==2.0.21
 factory-boy==2.7.0
-populus==1.4.0
+fake-factory==0.7.4
 hypothesis==3.5.3
 tox==2.4.1
+eth-utils==0.7.4
+eth-abi==0.5.0

@@ -1,7 +1,7 @@
 import pytest
 from func_sig_registry.registry.serializers import SignatureSerializer
 
-from func_sig_registry.utils.encoding import (
+from eth_utils import (
     force_text,
 )
 

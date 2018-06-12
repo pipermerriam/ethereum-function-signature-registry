@@ -1,6 +1,6 @@
 import pytest
 
-from func_sig_registry.utils.encoding import (
+from eth_utils import (
     encode_hex,
     force_text,
 )
