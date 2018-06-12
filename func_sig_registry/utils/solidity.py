@@ -145,4 +145,3 @@ def normalize_function_signature(raw_signature):
         for t, sub in raw_arguments
     ]
     return "{fn_name}({fn_args})".format(fn_name=fn_name, fn_args=','.join(arguments))
-
