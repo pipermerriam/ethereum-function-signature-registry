@@ -9,7 +9,7 @@ env:
   global:
     - HUEY_REDIS_HOST=localhost
     - DATABASE_URL=postgres://postgres@localhost/func_sig_registry
-    - SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2/solc"
+    #- SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2/solc"
   matrix:
     - TOX_ENV=py35-django19
     #- TOX_ENV=py35-contracts
@@ -18,20 +18,20 @@ cache:
   - pip: true
   - directories:
     - $HOME/.ethash
-    - $TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2
-    - $TRAVIS_BUILD_DIR/solc-versions/solidity-0.4.2/build
+    #- $TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2
+    #- $TRAVIS_BUILD_DIR/solc-versions/solidity-0.4.2/build
 before_install:
   - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get update
 install:
-  - ./bin/install_solc-0.4.2.sh
+  #- ./bin/install_solc-0.4.2.sh
   - travis_retry sudo apt-get install -y ethereum
   - travis_retry pip install setuptools --upgrade
   - travis_retry pip install tox
 before_script:
   - psql -c 'create database func_sig_registry;' -U postgres
-  - ls -lah $TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2/
-  - ./solc-versions/solc-0.4.2/solc --version
+  #- ls -lah $TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2/
+  #- ./solc-versions/solc-0.4.2/solc --version
   - mkdir -p $HOME/.ethash
   - geth makedag 0 $HOME/.ethash
 script:
