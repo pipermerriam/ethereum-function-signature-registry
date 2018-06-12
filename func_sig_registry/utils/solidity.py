@@ -49,7 +49,7 @@ ARGUMENT_REGEX = (
 
 def extract_function_name(raw_signature):
     fn_name_match = re.match(
-        '^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\(.*\).*$',
+        '^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\((?P<arglist>.*)\).*$',
         raw_signature,
         flags=re.DOTALL,
     )
@@ -59,7 +59,8 @@ def extract_function_name(raw_signature):
     fn_name = group_dict['fn_name']
     if fn_name == 'function':
         raise ValueError("Bad function name")
-    return fn_name
+    arglist = group_dict['arglist']
+    return fn_name, arglist
 
 
 RAW_FUNCTION_REGEX = (
@@ -136,8 +137,8 @@ FUNCTION_ARGUMENT_TYPES_REGEX = (
 
 
 def normalize_function_signature(raw_signature):
-    fn_name = extract_function_name(raw_signature)
-    raw_arguments = re.findall(FUNCTION_ARGUMENT_TYPES_REGEX, raw_signature)
+    fn_name, args = extract_function_name(raw_signature)
+    raw_arguments = re.findall(FUNCTION_ARGUMENT_TYPES_REGEX, args)
 
     arguments = [
         "".join((to_canonical_type(t), sub))

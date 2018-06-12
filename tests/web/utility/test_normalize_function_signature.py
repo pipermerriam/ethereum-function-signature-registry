@@ -55,6 +55,10 @@ from func_sig_registry.utils.solidity import (
         ('foo(uint8[])', 'foo(uint8[])'),
         ('foo(uint8[][2][][3])', 'foo(uint8[][2][][3])'),
         ('foo(uint8[][2][][3], uint, bytes32[3][])', 'foo(uint8[][2][][3],uint256,bytes32[3][])'),
+        # types in method name
+        ('mintToken(uint,address)','mintToken(uint256,address)' ),
+        ('uint()', 'uint()'),
+        ('uint256()', 'uint256()'),
     )
 )
 def test_normalizing_function_signatures(raw_signature, expected):

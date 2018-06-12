@@ -25,5 +25,5 @@ def test_import_from_raw_text_signature(raw_signature, expected, models):
     )
 )
 def test_import_from_raw_text_signature_with_bad_signatures(bad_signature, models):
-    with pytest.raises(ValueError):
-        models.Signature.import_from_raw_text_signature(bad_signature)
+    res = models.Signature.import_from_raw_text_signature(bad_signature)
+    assert res is None
