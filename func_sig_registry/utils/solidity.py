@@ -146,14 +146,3 @@ def normalize_function_signature(raw_signature):
     ]
     return "{fn_name}({fn_args})".format(fn_name=fn_name, fn_args=','.join(arguments))
 
-def test():
-   print(normalize_function_signature("foobar(uint,bytes)"))
-   print(normalize_function_signature("mintToken(uint,bytes)"))
-   print(normalize_function_signature("mint(uint256 nonce, bytes32 challenge_digest)"))
-   # Expected:
-   #foobar(uint256,bytes)
-   #mintToken(uint256,bytes)
-   #mint(uint256,bytes32)
-
-
-#test()
