@@ -13,32 +13,32 @@ STATIC_TYPES = list(itertools.chain(
 ))
 
 TYPE_REGEX = '|'.join((
-    _type + '(?![a-z0-9])'
+    _type + r'(?![a-z0-9])'
     for _type
     in itertools.chain(STATIC_TYPES, STATIC_TYPE_ALIASES, DYNAMIC_TYPES)
 ))
 
 CANONICAL_TYPE_REGEX = '|'.join((
-    _type + '(?![a-z0-9])'
+    _type + r'(?![a-z0-9])'
     for _type
     in itertools.chain(DYNAMIC_TYPES, STATIC_TYPES)
 ))
 
 NAME_REGEX = (
-    '[a-zA-Z_]'
-    '[a-zA-Z0-9_]*'
+    r'[a-zA-Z_]'
+    r'[a-zA-Z0-9_]*'
 )
 
 SUB_TYPE_REGEX = (
-    '\['
-    '[0-9]*'
-    '\]'
+    r'\['
+    r'[0-9]*'
+    r'\]'
 )
 
 ARGUMENT_REGEX = (
-    '(?:{type})'
-    '(?:(?:{sub_type})*)?'
-    '\s+'
+    r'(?:{type})'
+    r'(?:(?:{sub_type})*)?'
+    r'\s+'
     '{name}'
 ).format(
     type=TYPE_REGEX,
@@ -49,7 +49,7 @@ ARGUMENT_REGEX = (
 
 def extract_function_name(raw_signature):
     fn_name_match = re.match(
-        '^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\((?P<arglist>.*)\).*$',
+        r'^(?:function\s+)?\s*(?P<fn_name>[a-zA-Z_][a-zA-Z0-9_]*).*\((?P<arglist>.*)\).*$',
         raw_signature,
         flags=re.DOTALL,
     )
@@ -64,7 +64,7 @@ def extract_function_name(raw_signature):
 
 
 RAW_FUNCTION_REGEX = (
-    'function\s+{name}\s*\(\s*(?:{arg}(?:(?:\s*,\s*{arg}\s*)*)?)?\s*\)'.format(
+    r'function\s+{name}\s*\(\s*(?:{arg}(?:(?:\s*,\s*{arg}\s*)*)?)?\s*\)'.format(
         name=NAME_REGEX,
         arg=ARGUMENT_REGEX,
     )
@@ -94,12 +94,12 @@ def extract_function_signatures(code):
 
 NORM_FUNCTION_REGEX = (
     '^'
-    '{fn_name}\('
+    r'{fn_name}\('
     '('
     '({type})({sub_type})*'
     '(,({type})({sub_type})*)*'
     ')?'
-    '\)$'
+    r'\)$'
 ).format(
     fn_name=NAME_REGEX,
     type=CANONICAL_TYPE_REGEX,
@@ -128,7 +128,7 @@ def to_canonical_type(value):
 FUNCTION_ARGUMENT_TYPES_REGEX = (
     '(?P<type>{type})'
     '(?P<sub_type>(?:{sub_type})*)'
-    '(?:\s*)'
+    r'(?:\s*)'
 ).format(
     type=TYPE_REGEX,
     sub_type=SUB_TYPE_REGEX,
