@@ -45,3 +45,11 @@ To run the individual tests suites.
 $ py.test tests/web
 $ py.test tests/contracts
 ```
+
+## Serve the site on a development machine
+
+To serve the site on a development machine, bypassing several security measures, run:
+
+```bash
+python manage.py runserver --settings func_sig_registry.settings_dev
+```
