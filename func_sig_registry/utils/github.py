@@ -30,7 +30,7 @@ def get_repository_solidity_files(username, repository, branch='master'):
         with tarfile.open(archive_path) as archive_file:
             archive_file.extractall(extract_path)
 
-        for dirpath, dirnames, filenames in os.walk(extract_path):
+        for dirpath, _, filenames in os.walk(extract_path):
             for filename in filenames:
                 _, extension = os.path.splitext(filename)
                 if extension == ".sol":
