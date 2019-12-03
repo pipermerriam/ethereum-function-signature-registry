@@ -7,3 +7,18 @@
   background-repeat: repeat-x;
   border-color: #dca7a7;
 }
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+.main-content {
+  flex: 1 0 auto;
+}
+.main-footer {
+  flex-shrink: 0;
+}
+
+.footer-item {
+  margin-right: 10px;
+}
