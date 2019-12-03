@@ -11,3 +11,6 @@ tmp/
 build/
 .hypothesis
 chains/
+.tox
+.vscode
+venv*
