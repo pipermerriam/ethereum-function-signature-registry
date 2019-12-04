@@ -2,7 +2,7 @@ language: python
 services:
   - redis-server
 python:
-  - "3.5"
+  - "3.6"
 dist: trusty
 sudo: required
 env:
@@ -11,8 +11,8 @@ env:
     - DATABASE_URL=postgres://postgres@localhost/func_sig_registry
     #- SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-0.4.2/solc"
   matrix:
-    - TOX_ENV=py35-django19
-    #- TOX_ENV=py35-contracts
+    - TOX_ENV=py36-django19
+    #- TOX_ENV=py36-contracts
     - TOX_ENV=flake8
 cache:
   - pip: true
