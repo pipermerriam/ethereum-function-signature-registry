@@ -1,9 +1,5 @@
 import pytest
 
-from eth_utils import (
-    encode_hex,
-    force_text,
-)
 from func_sig_registry.utils.abi import make_4byte_signature
 
 
