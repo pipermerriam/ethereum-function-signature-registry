@@ -84,6 +84,19 @@ def test_create_duplicate_signature(api_client, factories):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
+def test_create_complex_signature(api_client):
+    create_url = reverse('api:signature-list')
+
+    text_signature = 'getOrdersInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[])'  # noqa: E501
+
+    response = api_client.post(create_url, {'text_signature': text_signature})
+    assert response.status_code == status.HTTP_201_CREATED
+    data = response.data
+    assert data['text_signature'] == text_signature
+    assert data['bytes_signature'] == '~\x9dt\xdc'
+    assert data['hex_signature'] == '0x7e9d74dc'
+
+
 def test_retrieve_signature(api_client, factories):
     signature = factories.SignatureFactory()
     detail_url = reverse('api:signature-detail', kwargs={'pk': signature.pk})

@@ -35,6 +35,20 @@ contract Foo {
 
     // commented out
     // function foo_8(address x) {}
+
+    // fixed types
+    function foo_9(fixed a, ufixed b){}
+
+    struct T {
+        int x;
+        int y;
+    }
+
+    // functions with struct args ignored
+    function foo_10(T a, ufixed b){}
+
+    // functions with non-standard type args ignored
+    function foo_11(bar a, ufixed b){}
 }
 """
 
@@ -50,6 +64,6 @@ def test_importing_solidity_source_file(api_client, factories):
 
     assert response.status_code == status.HTTP_201_CREATED
     data = response.data
-    assert data['num_processed'] == 8
-    assert data['num_imported'] == 6
+    assert data['num_processed'] == 9
+    assert data['num_imported'] == 7
     assert data['num_duplicates'] == 2
