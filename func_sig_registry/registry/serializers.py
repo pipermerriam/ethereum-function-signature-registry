@@ -7,7 +7,6 @@ from func_sig_registry.utils.abi import (
 )
 from func_sig_registry.utils.solidity import (
     normalize_function_signature,
-    is_canonical_function_signature,
 )
 
 from .models import Signature
@@ -37,8 +36,6 @@ class SignatureSerializer(serializers.ModelSerializer):
             signature = normalize_function_signature(data)
         except ValueError:
             raise serializers.ValidationError('Unknown signature format')
-        if not is_canonical_function_signature(signature):
-            raise serializers.ValidationError('Signature could not be normalized')
         return signature
 
 

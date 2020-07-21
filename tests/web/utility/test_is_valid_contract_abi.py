@@ -33,6 +33,12 @@ MISSING_FUNCTION_TYPE = [{
     'outputs': [],
 }]
 
+ABI_TUPLE_ARG = json.loads('[{"constant":false,"inputs":[{"components":[{"internalType":"int256","name":"x","type":"int256"},{"internalType":"int256","name":"y","type":"int256"}],"internalType":"struct Test2.Test","name":"a","type":"tuple"}],"name":"myFun","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]')
+
+# from 0x4f833a24e1f95d70f028921e27040ca56e09ab0b mainnet address:
+# https://github.com/pipermerriam/ethereum-function-signature-registry/issues/37
+ABI_GET_ORDERS_INFO = json.loads('[{"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"getOrdersInfo","outputs":[{"components":[{"name":"orderStatus","type":"uint8"},{"name":"orderHash","type":"bytes32"},{"name":"orderTakerAssetFilledAmount","type":"uint256"}],"name":"","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"}]')
+
 
 @pytest.mark.parametrize(
     'contract_abi,expected',
@@ -51,6 +57,9 @@ MISSING_FUNCTION_TYPE = [{
         (SINGLE_EVENT, True),
         (SOME_OF_EACH, True),
         (SOME_OF_EACH_AND_THREE_FUNCTIONS, True),
+        # complex ABI definitions
+        (ABI_TUPLE_ARG, True),
+        (ABI_GET_ORDERS_INFO, True),
         # bad definitions
         (MISSING_FUNCTION_NAME, False),
         (MISSING_FUNCTION_TYPE, False),

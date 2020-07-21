@@ -1,8 +1,17 @@
-from sha3 import keccak_256
+from typing import (
+    Any,
+    Dict,
+)
 
+from eth_utils.abi import (
+    collapse_if_tuple,
+)
 from jsonschema import (
     validate,
     ValidationError,
+)
+from sha3 import (
+    keccak_256,
 )
 
 
@@ -103,10 +112,10 @@ def is_valid_contract_abi(contract_abi):
         return True
 
 
-def function_definition_to_text_signature(function_definition):
-    return "{fn_name}({fn_input_types})".format(
-        fn_name=function_definition['name'],
-        fn_input_types=','.join([
-            input['type'] for input in function_definition.get('inputs', [])
-        ]),
+def function_definition_to_text_signature(abi: Dict[str, Any]) -> str:
+    return '{fn_name}({fn_input_types})'.format(
+        fn_name=abi['name'],
+        fn_input_types=','.join(
+            [collapse_if_tuple(abi_input) for abi_input in abi.get('inputs', [])]
+        ),
     )
