@@ -23,6 +23,9 @@ def make_4byte_signature(text_signature):
     from .encoding import force_bytes
     return keccak_256(force_bytes(text_signature)).digest()[:4]
 
+def make_32byte_signature(text_signature):
+    from .encoding import force_bytes
+    return keccak_256(force_bytes(text_signature)).digest()
 
 ARGUMENT_SCHEMA = {
     'type': 'object',
@@ -119,3 +122,7 @@ def function_definition_to_text_signature(abi: Dict[str, Any]) -> str:
             [collapse_if_tuple(abi_input) for abi_input in abi.get('inputs', [])]
         ),
     )
+
+#TODO
+def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
+    pass
