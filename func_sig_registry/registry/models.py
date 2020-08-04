@@ -10,7 +10,9 @@ from func_sig_registry.utils.github import (
 )
 from func_sig_registry.utils.solidity import (
     extract_function_signatures,
-    normalize_function_signature,
+    normalize_function_signature
+)
+from func_sig_registry.utils.events_solidity import (
     normalize_event_signature,
     extract_event_signatures
 )

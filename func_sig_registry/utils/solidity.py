@@ -95,10 +95,6 @@ def extract_function_signatures(code):
     return matches or []
 
 
-#TODO
-def extract_event_signatures(code):
-    pass
-
 FUNCTION_PARTS_RE = re.compile(r"""
 ^
 \s*
@@ -208,7 +204,3 @@ def normalize_function_signature(raw_signature: str) -> str:
         raise ValueError('function args contain non-standard types') from e
     else:
         return f'{fn_name}{args_tuple_type.to_type_str()}'
-
-#TODO
-def normalize_event_signature(raw_signature: str) -> str:
-    pass
