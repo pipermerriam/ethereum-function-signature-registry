@@ -86,6 +86,25 @@ function                          # leading "function" keyword
 \)                                # closing paren after arg list
 """.format(name=NAME_REGEX, arg=ARGUMENT_REGEX), re.VERBOSE)
 
+RAW_EVENT_RE = re.compile(r"""
+event                             # leading "event" keyword
+\s+
+{name}
+\s+
+\(                                # opening paren before arg list
+    \s*
+    (?:
+        {arg}                     # first arg in arg list
+        (?:
+            (?:\s*,\s*{arg}\s*)*  # other args in arg list
+        )?
+        (?:,)?                    # optional trailing comma in arg list
+    )?                            # optional arg list
+    \s*
+\)
+(anonymous)?                      # optional anonymous
+""".format(name=NAME_REGEX, arg=ARGUMENT_REGEX), re.VERBOSE)
+
 
 def extract_function_signatures(code):
     """
