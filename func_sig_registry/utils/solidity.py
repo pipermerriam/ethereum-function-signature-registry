@@ -114,6 +114,15 @@ def extract_function_signatures(code):
     return matches or []
 
 
+def extract_event_signatures(code):
+    """
+    Given a string of solidity code, extract all of the event declarations,
+    including anonymous
+    """
+    matches = RAW_EVENT_RE.findall(code)
+    return matches or []
+
+
 FUNCTION_PARTS_RE = re.compile(r"""
 ^
 \s*
