@@ -14,9 +14,7 @@ from func_sig_registry.utils.solidity import (
 )
 from func_sig_registry.utils.abi import (
     make_4byte_signature,
-    function_definition_to_text_signature,
-    make_32byte_signature,
-    event_definition_to_text_signature
+    function_definition_to_text_signature
 )
 from func_sig_registry.utils.encoding import (
     encode_hex,
