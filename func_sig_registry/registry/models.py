@@ -7,6 +7,7 @@ from django.core.validators import (
     MaxLengthValidator,
 )
 from django.core.exceptions import ValidationError
+from eth_utils import event_signature_to_log_topic
 
 from func_sig_registry.utils.github import (
     get_repository_solidity_files,
@@ -22,7 +23,6 @@ from func_sig_registry.utils.events_solidity import (
 from func_sig_registry.utils.abi import (
     make_4byte_signature,
     function_definition_to_text_signature,
-    make_32byte_signature,
     event_definition_to_text_signature,
 )
 from func_sig_registry.utils.encoding import (
@@ -162,11 +162,11 @@ class EventSignature(models.Model):
                                         ])
 
     bytes_signature = models.BinaryField(max_length=32,
-                                            unique=False,
+                                            unique=True,
                                             validators=[MinLengthValidator(32)])
                                           
     hex_signature = models.CharField(max_length=64,
-                                        unique=False,
+                                        unique=True,
                                         validators=[MinLengthValidator(64)])
 
     def __str__(self):
@@ -180,14 +180,11 @@ class EventSignature(models.Model):
             raise ValidationError('Unknown signature format')
 
     class Meta:
-        unique_together = (
-            ('text_signature', 'bytes_signature'),
-        )
         ordering = ('-created_at',)
 
     def save(self, *args, **kwargs):
         if len(self.bytes_signature) == 0 or len(self.hex_signature) == 0:
-            self.bytes_signature = make_32byte_signature(self.text_signature)
+            self.bytes_signature = event_signature_to_log_topic(self.text_signature)
             self.hex_signature = force_text(remove_0x_prefix(encode_hex(self.bytes_signature)))
         return super(EventSignature, self).save()
 
