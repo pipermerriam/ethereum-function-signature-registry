@@ -23,6 +23,7 @@ def make_4byte_signature(text_signature):
     from .encoding import force_bytes
     return keccak_256(force_bytes(text_signature)).digest()[:4]
 
+
 ARGUMENT_SCHEMA = {
     'type': 'object',
     'properties': {
