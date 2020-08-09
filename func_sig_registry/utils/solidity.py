@@ -56,9 +56,22 @@ SUB_TYPE_REGEX = (
     r'\]'
 )
 
-ARGUMENT_REGEX = (
+FUNCTION_ARGUMENT_REGEX = (
     r'(?:{type})'
     r'(?:(?:{sub_type})*)?'
+    r'\s+'
+    '{name}'
+).format(
+    type=TYPE_REGEX,
+    sub_type=SUB_TYPE_REGEX,
+    name=NAME_REGEX,
+)
+
+EVENT_ARGUMENT_REGEX = (
+    r'(?:{type})'
+    r'(?:(?:{sub_type})*)?'
+    r'\s+'
+    r'(indexed)?'
     r'\s+'
     '{name}'
 ).format(
@@ -84,7 +97,7 @@ function                          # leading "function" keyword
     )?                            # optional arg list
     \s*
 \)                                # closing paren after arg list
-""".format(name=NAME_REGEX, arg=ARGUMENT_REGEX), re.VERBOSE)
+""".format(name=NAME_REGEX, arg=FUNCTION_ARGUMENT_REGEX), re.VERBOSE)
 
 RAW_EVENT_RE = re.compile(r"""
 event                             # leading "event" keyword
@@ -102,8 +115,9 @@ event                             # leading "event" keyword
     )?                            # optional arg list
     \s*
 \)
+\s+
 (anonymous)?                      # optional anonymous
-""".format(name=NAME_REGEX, arg=ARGUMENT_REGEX), re.VERBOSE)
+""".format(name=NAME_REGEX, arg=FUNCTION_ARGUMENT_REGEX), re.VERBOSE)
 
 
 def extract_function_signatures(code):
