@@ -79,7 +79,6 @@ EVENT_ARGUMENT_REGEX = (
     name=NAME_REGEX,
 )
 
-
 RAW_FUNCTION_RE = re.compile(r"""
 function                          # leading "function" keyword
 \s+
@@ -101,7 +100,7 @@ function                          # leading "function" keyword
 RAW_EVENT_RE = re.compile(r"""
 event                             # leading "event" keyword
 \s+
-{name}                            # function name
+{name}                            # event name
 \s*
 \(                                # opening paren before arg list
     \s*
