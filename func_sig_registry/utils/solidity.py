@@ -113,8 +113,8 @@ event                             # leading "event" keyword
         (?:,)?                    # optional trailing comma in arg list
     )?                            # optional arg list
     \s*
-\)                               # closing paren after arg list
-(?:\s*anonymous)?                   # optional anonymous
+\)                                # closing paren after arg list
+(?:\s*anonymous)?                 # optional anonymous
 """.format(name=NAME_REGEX, arg=EVENT_ARGUMENT_REGEX), re.VERBOSE)
 
 
