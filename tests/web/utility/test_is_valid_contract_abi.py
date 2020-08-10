@@ -18,6 +18,35 @@ SOME_OF_EACH = json.loads('[{"constant":false,"inputs":[],"name":"f","outputs":[
 
 SOME_OF_EACH_AND_THREE_FUNCTIONS = json.loads('[{"constant":false,"inputs":[{"name":"","type":"uint256"},{"name":"","type":"int256"},{"name":"","type":"address"}],"name":"c","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"f","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"","type":"int256"},{"name":"","type":"int256"}],"name":"b","outputs":[],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[],"name":"E","type":"event"}]')
 
+SINGLE_EVENT_INDEXED = [{
+    "type":"event",
+    "inputs": [
+        {"name":"a","type":"uint256","indexed":True},
+        {"name":"b","type":"bytes32","indexed":False}
+        ],
+    "name":"foo",
+    "anonymous" : False
+}]
+
+MISSING_INDEXED_EVENT = [{
+    "type":"event",
+    "inputs": [
+        {"name":"a","type":"uint256"},
+        {"name":"b","type":"bytes32","indexed":False}
+        ],
+    "name":"foo",
+    "anonymous" : False
+}]
+
+INCORRECT_INDEXED_TYPE = [{
+    "type":"event",
+    "inputs": [
+        {"name":"a","type":"uint256","indexed":"True"},
+        {"name":"b","type":"bytes32","indexed":False}
+        ],
+    "name":"foo",
+    "anonymous" : False
+}]
 
 MISSING_FUNCTION_NAME = [{
     'constant': True,
@@ -38,6 +67,7 @@ ABI_TUPLE_ARG = json.loads('[{"constant":false,"inputs":[{"components":[{"intern
 # from 0x4f833a24e1f95d70f028921e27040ca56e09ab0b mainnet address:
 # https://github.com/pipermerriam/ethereum-function-signature-registry/issues/37
 ABI_GET_ORDERS_INFO = json.loads('[{"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"getOrdersInfo","outputs":[{"components":[{"name":"orderStatus","type":"uint8"},{"name":"orderHash","type":"bytes32"},{"name":"orderTakerAssetFilledAmount","type":"uint256"}],"name":"","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"}]')
+
 
 
 @pytest.mark.parametrize(
@@ -63,6 +93,11 @@ ABI_GET_ORDERS_INFO = json.loads('[{"constant":true,"inputs":[{"components":[{"n
         # bad definitions
         (MISSING_FUNCTION_NAME, False),
         (MISSING_FUNCTION_TYPE, False),
+        (MISSING_INDEXED_EVENT, False),
+        (INCORRECT_INDEXED_TYPE, False),
+        # event with indexed
+        (SINGLE_EVENT_INDEXED, True),
+
     ),
 )
 def test_is_valid_contract_abi(contract_abi, expected):
