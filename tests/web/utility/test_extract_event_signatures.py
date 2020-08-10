@@ -42,6 +42,11 @@ contract Foo {
 
     // invalid, not an event
     function foo_12(uint a);
+
+    // invalid, mismatch of parentheses
+    event foo_13(
+
+    event foo_14)
 }
 """
 
