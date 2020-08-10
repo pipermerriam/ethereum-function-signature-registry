@@ -132,9 +132,6 @@ def function_definition_to_text_signature(abi: Dict[str, Any]) -> str:
 
 
 def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
-    for abi_input in abi.get('inputs', []):
-        print(abi_input)
-
     return '{fn_name}({fn_input_types})'.format(
         fn_name=abi['name'],
         fn_input_types=','.join(
