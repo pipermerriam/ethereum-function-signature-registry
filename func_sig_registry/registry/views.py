@@ -160,7 +160,7 @@ class ImportContractABIView(generics.GenericAPIView):
 
         messages.success(
             self.request._request,
-            "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
+            "Found {0} function and event signatures.  Imported {1}, Skipped {2} duplicates.".format(
                 num_processed, num_imported, num_duplicates,
             ),
         )
