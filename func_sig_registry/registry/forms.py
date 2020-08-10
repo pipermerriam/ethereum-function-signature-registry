@@ -4,7 +4,10 @@ from rest_framework import serializers
 from rest_framework.utils import html
 from rest_framework.fields import empty
 
-from .models import Signature
+from .models import (
+    Signature,
+    EventSignature,
+)
 
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
@@ -98,8 +101,19 @@ class ContractABIForm(serializers.Serializer):
         else:
             num_imported = sum(tuple(zip(*import_results))[1])
             num_duplicates = num_processed - num_imported
+        
+        #Event Signature handler
+        import_results_event = EventSignature.import_from_contract_abi(contract_abi)
+        num_processed_event = len(import_results_event)
+        if num_processed_event == 0:
+            num_imported_event = 0
+            num_duplicates_event = 0
+        else:
+            num_imported_event = sum(tuple(zip(*import_results_event))[1])
+            num_duplicates_event = num_processed_event - num_imported_event
+
         return {
-            'num_processed': num_processed,
-            'num_imported': num_imported,
-            'num_duplicates': num_duplicates,
+            'num_processed': num_processed + num_processed_event,
+            'num_imported': num_imported + num_imported_event,
+            'num_duplicates': num_duplicates + num_duplicates_event,
         }

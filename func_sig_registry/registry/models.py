@@ -90,6 +90,7 @@ class Signature(models.Model):
             text_signature = normalize_function_signature(raw_function_signature)
         except ValueError:
             logger.error("error signature: %s", raw_function_signature)
+            return None, False
         else:
             logger.info("importing signature: %s", text_signature)
             return cls.objects.get_or_create(
@@ -203,6 +204,7 @@ class EventSignature(models.Model):
             text_signature = normalize_event_signature(raw_event_signature)
         except ValueError:
             logger.error("error signature: %s", raw_event_signature)
+            return None, False
         else:
             logger.info("importing signature: %s", text_signature)
             return cls.objects.get_or_create(
