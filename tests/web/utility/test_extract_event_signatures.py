@@ -33,6 +33,15 @@ contract Foo {
 
     // contains indexed argugment
     event foo_9(int256 indexed a);
+
+    // invalid parentheses
+    event foo_10(uint a};
+
+    // invalid type
+    event foo_11(uint10 a);
+
+    // invalid, not an event
+    function foo_12(uint a);
 }
 """
 
