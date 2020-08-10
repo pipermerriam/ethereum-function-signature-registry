@@ -44,6 +44,16 @@ INPUTS = OUTPUTS = {'type': 'array', 'items': {'$ref': '#/definitions/argument'}
 EVENT_TYPE = {'type': 'string', 'enum': ['event']}
 CONSTRUCTOR_TYPE = {'type': 'string', 'enum': ['constructor']}
 
+EVENT_ARGUMENT_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'name': NAME,
+        'type': NAME,
+        'indexed' : BOOLEAN,
+    },
+    'required': ['name', 'type', 'indexed'],
+}
+
 FUNCTION_SCHEMA = {
     'type': 'object',
     'properties': {
@@ -64,13 +74,13 @@ EVENT_SCHEMA = {
     'properties': {
         'anonymous': BOOLEAN,
         'type': {'type': 'string', 'enum': ['event']},
-        'inputs': INPUTS,
+        'inputs': {
+            'type': 'array', 
+            'items': EVENT_ARGUMENT_SCHEMA,
+        },
         'name': NAME,
     },
     'required': ['type', 'inputs', 'name'],
-    'definitions': {
-        'argument': ARGUMENT_SCHEMA,
-    },
 }
 
 CONSTRUCTOR_SCHEMA = {
@@ -120,6 +130,15 @@ def function_definition_to_text_signature(abi: Dict[str, Any]) -> str:
         ),
     )
 
-#TODO
+
 def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
-    pass
+    for abi_input in abi.get('inputs', []):
+        print(abi_input)
+
+    return '{fn_name}({fn_input_types})'.format(
+        fn_name=abi['name'],
+        fn_input_types=','.join(
+            [f"{collapse_if_tuple(abi_input)}{' indexed' if abi_input['indexed'] else ''}" 
+            for abi_input in abi.get('inputs', [])]
+        ),
+    )
