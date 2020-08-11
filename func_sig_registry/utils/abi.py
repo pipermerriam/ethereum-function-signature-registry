@@ -139,3 +139,24 @@ def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
             for abi_input in abi.get('inputs', [])]
         ),
     )
+
+
+def retrieve_stats_from_import_results(import_results):
+        num_processed = len(import_results)
+        
+        import_results = [
+            result
+            for result in import_results
+            if result is not None
+        ]
+
+        num_ignored = num_processed - len(import_results)
+
+        if len(import_results) == 0:
+            num_imported = 0
+            num_duplicates = 0
+        else:
+            num_imported = sum(tuple(zip(*import_results))[1])
+            num_duplicates = len(import_results) - num_imported
+        
+        return num_processed, num_imported, num_duplicates, num_ignored

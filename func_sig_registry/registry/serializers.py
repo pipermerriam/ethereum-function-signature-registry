@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
+    retrieve_stats_from_import_results,
 )
 from func_sig_registry.utils.solidity import (
     normalize_function_signature,
@@ -83,6 +84,7 @@ class ContractABISerializer(serializers.Serializer):
     num_processed = serializers.IntegerField(read_only=True)
     num_imported = serializers.IntegerField(read_only=True)
     num_duplicates = serializers.IntegerField(read_only=True)
+    num_ignored = serializers.IntegerField(read_only=True)
 
     def validate_contract_abi(self, value):
         try:
@@ -97,30 +99,19 @@ class ContractABISerializer(serializers.Serializer):
 
     def create(self, validated_data):
         contract_abi = validated_data['contract_abi']
-        import_results = Signature.import_from_contract_abi(contract_abi)
-        num_processed = len(import_results)
-        if num_processed == 0:
-            num_imported = 0
-            num_duplicates = 0
-        else:
-            num_imported = sum(tuple(zip(*import_results))[1])
-            num_duplicates = num_processed - num_imported
         
-        #Event Signature handler
-        import_results_event = EventSignature.import_from_contract_abi(contract_abi)
-        num_processed_event = len(import_results_event)
-        if num_processed_event == 0:
-            num_imported_event = 0
-            num_duplicates_event = 0
-        else:
-            num_imported_event = sum(tuple(zip(*import_results_event))[1])
-            num_duplicates_event = num_processed_event - num_imported_event
+        num_proccessed, num_imported, num_duplicates, num_ignored = tuple(map(sum,zip(
+            retrieve_stats_from_import_results(Signature.import_from_contract_abi(contract_abi)),
+            retrieve_stats_from_import_results(EventSignature.import_from_contract_abi(contract_abi)),
+        )))#add corresponding retrieved result stats
 
         return {
-            'num_processed': num_processed + num_processed_event,
-            'num_imported': num_imported + num_imported_event,
-            'num_duplicates': num_duplicates + num_duplicates_event,
+            'num_processed' : num_proccessed,
+            'num_imported' : num_imported,
+            'num_duplicates' : num_duplicates,
+            'num_ignored' : num_ignored,
         }
+    
 
 
 class _OwnerSerializer(serializers.Serializer):

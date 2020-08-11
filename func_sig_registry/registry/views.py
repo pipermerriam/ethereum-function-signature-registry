@@ -157,11 +157,12 @@ class ImportContractABIView(generics.GenericAPIView):
         num_processed = results['num_processed']
         num_imported = results['num_imported']
         num_duplicates = results['num_duplicates']
+        num_ignored = results['num_ignored']
 
         messages.success(
             self.request._request,
-            "Found {0} function and event signatures.  Imported {1}, Skipped {2} duplicates.".format(
-                num_processed, num_imported, num_duplicates,
+            "Found {0} function and event signatures.  Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
+                num_processed, num_imported, num_ignored, num_duplicates
             ),
         )
         return redirect('signature-list')
