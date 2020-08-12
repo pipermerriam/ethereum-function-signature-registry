@@ -56,7 +56,7 @@ SUB_TYPE_REGEX = (
     r'\]'
 )
 
-ARGUMENT_REGEX = (
+FUNCTION_ARGUMENT_REGEX = (
     r'(?:{type})'
     r'(?:(?:{sub_type})*)?'
     r'\s+'
@@ -66,7 +66,6 @@ ARGUMENT_REGEX = (
     sub_type=SUB_TYPE_REGEX,
     name=NAME_REGEX,
 )
-
 
 RAW_FUNCTION_RE = re.compile(r"""
 function                          # leading "function" keyword
@@ -84,7 +83,7 @@ function                          # leading "function" keyword
     )?                            # optional arg list
     \s*
 \)                                # closing paren after arg list
-""".format(name=NAME_REGEX, arg=ARGUMENT_REGEX), re.VERBOSE)
+""".format(name=NAME_REGEX, arg=FUNCTION_ARGUMENT_REGEX), re.VERBOSE)
 
 
 def extract_function_signatures(code):
