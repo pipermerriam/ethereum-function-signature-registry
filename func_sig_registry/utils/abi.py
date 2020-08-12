@@ -119,3 +119,7 @@ def function_definition_to_text_signature(abi: Dict[str, Any]) -> str:
             [collapse_if_tuple(abi_input) for abi_input in abi.get('inputs', [])]
         ),
     )
+
+#TODO
+def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
+    pass
