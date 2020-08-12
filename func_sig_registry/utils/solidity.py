@@ -67,18 +67,6 @@ FUNCTION_ARGUMENT_REGEX = (
     name=NAME_REGEX,
 )
 
-EVENT_ARGUMENT_REGEX = (
-    r'(?:{type})'
-    r'(?:(?:{sub_type})*)?'
-    r'(?:\s+indexed)?'
-    r'\s+'
-    '{name}'
-).format(
-    type=TYPE_REGEX,
-    sub_type=SUB_TYPE_REGEX,
-    name=NAME_REGEX,
-)
-
 RAW_FUNCTION_RE = re.compile(r"""
 function                          # leading "function" keyword
 \s+
@@ -97,40 +85,12 @@ function                          # leading "function" keyword
 \)                                # closing paren after arg list
 """.format(name=NAME_REGEX, arg=FUNCTION_ARGUMENT_REGEX), re.VERBOSE)
 
-RAW_EVENT_RE = re.compile(r"""
-event                             # leading "event" keyword
-\s+
-{name}                            # event name
-\s*
-\(                                # opening paren before arg list
-    \s*
-    (?:
-        {arg}                     # first arg in arg list
-        (?:
-            (?:\s*,\s*{arg}\s*)*  # other args in arg list
-        )?
-        (?:,)?                    # optional trailing comma in arg list
-    )?                            # optional arg list
-    \s*
-\)                                # closing paren after arg list
-(?:\s*anonymous)?                 # optional anonymous
-""".format(name=NAME_REGEX, arg=EVENT_ARGUMENT_REGEX), re.VERBOSE)
-
 
 def extract_function_signatures(code):
     """
     Given a string of solidity code, extract all of the function declarations.
     """
     matches = RAW_FUNCTION_RE.findall(code)
-    return matches or []
-
-
-def extract_event_signatures(code):
-    """
-    Given a string of solidity code, extract all of the event declarations,
-    including anonymous
-    """
-    matches = RAW_EVENT_RE.findall(code)
     return matches or []
 
 

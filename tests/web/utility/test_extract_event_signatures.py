@@ -1,4 +1,4 @@
-from func_sig_registry.utils.solidity import (
+from func_sig_registry.utils.events_solidity import (
     extract_event_signatures,
 )
 
