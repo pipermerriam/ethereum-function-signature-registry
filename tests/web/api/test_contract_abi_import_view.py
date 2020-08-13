@@ -19,7 +19,8 @@ def test_importing_contract_abi(api_client, factories):
 
     import_url = reverse('api:import-abi')
 
-    response = api_client.post(import_url, {'contract_abi': MY_ABI})
+    response = api_client.post(import_url,
+                               {'contract_abi': ABI_WITH_INVALID_ENTRIES})
 
     assert response.status_code == status.HTTP_201_CREATED
     data = response.data
