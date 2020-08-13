@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import (
     Any,
     Dict,
@@ -49,7 +50,7 @@ EVENT_ARGUMENT_SCHEMA = {
     'properties': {
         'name': NAME,
         'type': NAME,
-        'indexed' : BOOLEAN,
+        'indexed': BOOLEAN,
     },
     'required': ['name', 'type', 'indexed'],
 }
@@ -75,7 +76,7 @@ EVENT_SCHEMA = {
         'anonymous': BOOLEAN,
         'type': {'type': 'string', 'enum': ['event']},
         'inputs': {
-            'type': 'array', 
+            'type': 'array',
             'items': EVENT_ARGUMENT_SCHEMA,
         },
         'name': NAME,
@@ -135,28 +136,36 @@ def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
     return '{fn_name}({fn_input_types})'.format(
         fn_name=abi['name'],
         fn_input_types=','.join(
-            [f"{collapse_if_tuple(abi_input)}{' indexed' if abi_input['indexed'] else ''}" 
-            for abi_input in abi.get('inputs', [])]
+            [f"{collapse_if_tuple(abi_input)}{' indexed' if abi_input['indexed'] else ''}"
+                for abi_input in abi.get('inputs', [])]
         ),
     )
 
 
-def retrieve_stats_from_import_results(import_results):
-        num_processed = len(import_results)
-        
-        import_results = [
-            result
-            for result in import_results
-            if result is not None
-        ]
+def retrieve_stats_from_import_results(raw_import_results):
+    num_processed = len(raw_import_results)
 
-        num_ignored = num_processed - len(import_results)
+    import_results = [
+        result
+        for result in raw_import_results
+        if result is not None
+    ]
 
-        if len(import_results) == 0:
-            num_imported = 0
-            num_duplicates = 0
-        else:
-            num_imported = sum(tuple(zip(*import_results))[1])
-            num_duplicates = len(import_results) - num_imported
-        
-        return num_processed, num_imported, num_duplicates, num_ignored
+    num_ignored = num_processed - len(import_results)
+
+    if len(import_results) == 0:
+        num_imported = 0
+        num_duplicates = 0
+    else:
+        num_imported = sum(tuple(zip(*import_results))[1])
+        num_duplicates = len(import_results) - num_imported
+
+    ImportStats = namedtuple('ImportStats', ['num_processed', 'num_imported',
+                                             'num_duplicates', 'num_ignored'])
+
+    return ImportStats(
+        num_processed=num_processed,
+        num_imported=num_imported,
+        num_duplicates=num_duplicates,
+        num_ignored=num_ignored,
+    )

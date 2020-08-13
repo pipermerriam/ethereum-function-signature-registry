@@ -158,25 +158,26 @@ class EventSignature(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     text_signature = models.TextField(unique=True,
-                                        validators=[
-                                            MinLengthValidator(3), MaxLengthValidator(4096)
-                                        ])
+                                      validators=[
+                                        MinLengthValidator(3),
+                                        MaxLengthValidator(4096)
+                                      ])
 
     bytes_signature = models.BinaryField(max_length=32,
-                                            unique=True,
-                                            validators=[MinLengthValidator(32)])
-                                          
+                                         unique=True,
+                                         validators=[MinLengthValidator(32)])
+
     hex_signature = models.CharField(max_length=64,
-                                        unique=True,
-                                        validators=[MinLengthValidator(64)])
+                                     unique=True,
+                                     validators=[MinLengthValidator(64)])
 
     def __str__(self):
         return self.text_signature
 
     def clean_fields(self, exclude=None):
         try:
-            #TODO
-            self.text_signature = normalize_event_signature(self.text_signature)
+            self.text_signature = normalize_event_signature(
+                self.text_signature)
         except ValueError:
             raise ValidationError('Unknown signature format')
 
@@ -185,8 +186,10 @@ class EventSignature(models.Model):
 
     def save(self, *args, **kwargs):
         if len(self.bytes_signature) == 0 or len(self.hex_signature) == 0:
-            self.bytes_signature = event_signature_to_log_topic(self.text_signature)
-            self.hex_signature = force_text(remove_0x_prefix(encode_hex(self.bytes_signature)))
+            self.bytes_signature = event_signature_to_log_topic(
+                self.text_signature)
+            self.hex_signature = force_text(
+                remove_0x_prefix(encode_hex(self.bytes_signature)))
         return super(EventSignature, self).save()
 
     def get_hex_display(self):

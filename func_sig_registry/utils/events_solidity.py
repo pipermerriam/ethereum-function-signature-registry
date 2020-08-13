@@ -145,9 +145,9 @@ def validate_indexed_args(arglist: str):
 
     for p in parts:
         arg_parts = p.split()
-        if( len(arg_parts) > 1 and arg_parts[1] == "indexed"):
+        if(len(arg_parts) > 1 and arg_parts[1] == "indexed"):
             indexed_amt += 1
-    
+
     if(indexed_amt > 3):
         raise ValueError("Too many indexed arguments")
 
@@ -160,7 +160,7 @@ def normalize_event_signature(raw_signature: str) -> str:
     """
     et_name, args = extract_event_name(raw_signature)
 
-    #Check if number of indexed arguments is allowed
+    # Check if number of indexed arguments is allowed
     validate_indexed_args(args)
 
     try:
@@ -186,6 +186,3 @@ def normalize_event_signature(raw_signature: str) -> str:
         raise ValueError('event args contain non-standard types') from e
     else:
         return f'{et_name}{args_tuple_type.to_type_str()}'
-
-#TODO
-# "Name((uint, uint ))" - this doesn't work (with function also), decide what to do

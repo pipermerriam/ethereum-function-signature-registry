@@ -99,19 +99,22 @@ class ContractABISerializer(serializers.Serializer):
 
     def create(self, validated_data):
         contract_abi = validated_data['contract_abi']
-        
-        num_proccessed, num_imported, num_duplicates, num_ignored = tuple(map(sum,zip(
-            retrieve_stats_from_import_results(Signature.import_from_contract_abi(contract_abi)),
-            retrieve_stats_from_import_results(EventSignature.import_from_contract_abi(contract_abi)),
-        )))#add corresponding retrieved result stats
+
+        stats_function = retrieve_stats_from_import_results(
+            Signature.import_from_contract_abi(contract_abi))
+        stats_event = retrieve_stats_from_import_results(
+            EventSignature.import_from_contract_abi(contract_abi))
 
         return {
-            'num_processed' : num_proccessed,
-            'num_imported' : num_imported,
-            'num_duplicates' : num_duplicates,
-            'num_ignored' : num_ignored,
+            'num_processed':
+                stats_function.num_processed + stats_event.num_processed,
+            'num_imported':
+                stats_function.num_imported + stats_event.num_imported,
+            'num_duplicates':
+                stats_function.num_duplicates + stats_event.num_duplicates,
+            'num_ignored':
+                stats_function.num_ignored + stats_event.num_ignored,
         }
-    
 
 
 class _OwnerSerializer(serializers.Serializer):

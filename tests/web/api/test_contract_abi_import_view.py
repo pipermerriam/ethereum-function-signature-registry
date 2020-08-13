@@ -1,10 +1,7 @@
 from rest_framework import status
 from django.core.urlresolvers import reverse
 
-
-ABI = '[{"constant":false,"inputs":[{"name":"","type":"uint256"},{"name":"","type":"int256"},{"name":"","type":"address"}],"name":"c","outputs":[],"type":"function"},{"constant":false,"inputs":[],"name":"f","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"","type":"int256"},{"name":"","type":"int256"}],"name":"b","outputs":[],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[],"name":"E","type":"event"}]'
-
-MY_ABI = """
+ABI_WITH_INVALID_ENTRIES = """
 [
     {"constant":false,"inputs":[{"name":"","type":"uint256"},{"name":"","type":"int256"},{"name":"","type":"address"}],"name":"c","outputs":[],"type":"function"},
     {"constant":false,"inputs":[],"name":"f","outputs":[],"type":"function"},
@@ -15,6 +12,7 @@ MY_ABI = """
     {"constant":false,"inputs":[{"name":"", "type":"myint"}],"name":"ErrorF","outputs":[],"type":"function"}
 ]
 """
+
 
 def test_importing_contract_abi(api_client, factories):
     factories.SignatureFactory(text_signature='b(int256,int256)')
@@ -29,4 +27,3 @@ def test_importing_contract_abi(api_client, factories):
     assert data['num_imported'] == 3
     assert data['num_duplicates'] == 1
     assert data['num_ignored'] == 2
-
