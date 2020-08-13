@@ -15,7 +15,10 @@ from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
 )
 
-from .models import Signature
+from .models import (
+    Signature,
+    EventSignature,
+)
 from .tables import SignatureTable
 from .forms import (
     SignatureForm,
