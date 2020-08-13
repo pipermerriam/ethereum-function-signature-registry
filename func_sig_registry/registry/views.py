@@ -119,9 +119,8 @@ class SolidityImportView(generics.GenericAPIView):
         results = serializer.save()
         import_results = []
         for file_obj in results['source_files']:
-            code = force_text(file_obj.read())
-            import_results.extend(Signature.import_from_solidity_code(code))
-            import_results.extend(EventSignature.import_from_solidity_code(code))
+            import_results.extend(Signature.import_from_solidity_file(file_obj))
+            import_results.extend(EventSignature.import_from_solidity_file(file_obj))
         num_processed = len(import_results)
         if num_processed == 0:
             num_imported = 0
