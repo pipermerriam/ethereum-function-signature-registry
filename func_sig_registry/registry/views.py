@@ -15,7 +15,7 @@ from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
 )
 
-from .models import Signature
+from .models import Signature, EventSignature
 from .tables import SignatureTable
 from .forms import (
     SignatureForm,
@@ -116,17 +116,18 @@ class SolidityImportView(generics.GenericAPIView):
         import_results = []
         for file_obj in results['source_files']:
             import_results.extend(Signature.import_from_solidity_file(file_obj))
+            import_results.extend(EventSignature.import_from_solidity_code(file_obj))
         num_processed = len(import_results)
         if num_processed == 0:
             num_imported = 0
             num_duplicates = 0
-            messages.info(self.request._request, "No function signatures found")
+            messages.info(self.request._request, "No function or event signatures found")
         else:
             num_imported = sum(tuple(zip(*import_results))[1])
             num_duplicates = num_processed - num_imported
             messages.success(
                 self.request._request,
-                "Found {0} function signatures.  Imported {1}, Skipped {2} duplicates.".format(
+                "Found {0} function and event signatures.  Imported {1}, Skipped {2} duplicates.".format(
                     num_processed, num_imported, num_duplicates,
                 ),
             )
