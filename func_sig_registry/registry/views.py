@@ -13,7 +13,6 @@ from django_tables2 import SingleTableView
 
 from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
-    force_text,
 )
 
 from .models import (
