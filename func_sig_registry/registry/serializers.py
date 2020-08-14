@@ -15,7 +15,7 @@ from func_sig_registry.utils.solidity import (
 
 
 from .models import (
-    Signature,
+    Signature, 
     EventSignature,
 )
 
@@ -90,10 +90,16 @@ class SolidityImportSerializer(serializers.Serializer):
             import_results.extend(Signature.import_from_solidity_file(
                 validated_data['source_file'],
             ))
+            import_results.extend(EventSignature.import_from_solidity_file(
+                validated_data['source_file']
+            ))
 
         if validated_data.get('source_code'):
             import_results.extend(Signature.import_from_solidity_code(
                 validated_data['source_code'],
+            ))
+            import_results.extend(EventSignature.import_from_solidity_code(
+                validated_data['source_code']
             ))
 
         num_processed = len(import_results)
