@@ -142,6 +142,10 @@ def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
     )
 
 
+ImportStats = namedtuple('ImportStats', ['num_processed', 'num_imported',
+                                         'num_duplicates', 'num_ignored'])
+
+
 def retrieve_stats_from_import_results(raw_import_results):
     num_processed = len(raw_import_results)
 
@@ -159,9 +163,6 @@ def retrieve_stats_from_import_results(raw_import_results):
     else:
         num_imported = sum(tuple(zip(*import_results))[1])
         num_duplicates = len(import_results) - num_imported
-
-    ImportStats = namedtuple('ImportStats', ['num_processed', 'num_imported',
-                                             'num_duplicates', 'num_ignored'])
 
     return ImportStats(
         num_processed=num_processed,
