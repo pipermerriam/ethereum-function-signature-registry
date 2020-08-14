@@ -3,6 +3,7 @@ import factory
 from func_sig_registry.registry.models import (
     Signature,
     BytesSignature,
+    EventSignature,
 )
 
 
@@ -23,3 +24,10 @@ class BytesSignatureFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = BytesSignature
+
+
+class EventSignatureFactory(factory.DjangoModelFactory):
+    text_signature = factory.Sequence(lambda n: "return{n}()".format(n=n))
+
+    class Meta:
+        model = EventSignature
