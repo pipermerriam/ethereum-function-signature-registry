@@ -50,11 +50,6 @@ contract Foo {
     // functions with non-standard type args ignored
     function foo_11(bar a, ufixed b){}
 
-    // function signature expected stats: 
-    // processed: 9
-    // imported: 7
-    // duplicated: 2
-
     // empty event
     event bar_1();
 
