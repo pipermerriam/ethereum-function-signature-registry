@@ -4,6 +4,7 @@ from func_sig_registry.utils.events_solidity import (
     normalize_event_signature
 )
 
+
 @pytest.mark.parametrize(
     'raw_signature,expected',
     (

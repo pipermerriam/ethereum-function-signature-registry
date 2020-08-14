@@ -4,10 +4,14 @@ from rest_framework import serializers
 from rest_framework.utils import html
 from rest_framework.fields import empty
 
-from .models import Signature
+from .models import (
+    Signature,
+    EventSignature,
+)
 
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
+    retrieve_stats_from_import_results,
 )
 
 from func_sig_registry.utils.solidity import (
@@ -76,6 +80,7 @@ class ContractABIForm(serializers.Serializer):
     num_processed = serializers.IntegerField(read_only=True)
     num_imported = serializers.IntegerField(read_only=True)
     num_duplicates = serializers.IntegerField(read_only=True)
+    num_ignored = serializers.IntegerField(read_only=True)
 
     def validate_contract_abi(self, value):
         try:
@@ -90,16 +95,19 @@ class ContractABIForm(serializers.Serializer):
 
     def create(self, validated_data):
         contract_abi = validated_data['contract_abi']
-        import_results = Signature.import_from_contract_abi(contract_abi)
-        num_processed = len(import_results)
-        if num_processed == 0:
-            num_imported = 0
-            num_duplicates = 0
-        else:
-            num_imported = sum(tuple(zip(*import_results))[1])
-            num_duplicates = num_processed - num_imported
+
+        stats_function = retrieve_stats_from_import_results(
+            Signature.import_from_contract_abi(contract_abi))
+        stats_event = retrieve_stats_from_import_results(
+            EventSignature.import_from_contract_abi(contract_abi))
+
         return {
-            'num_processed': num_processed,
-            'num_imported': num_imported,
-            'num_duplicates': num_duplicates,
+            'num_processed':
+                stats_function.num_processed + stats_event.num_processed,
+            'num_imported':
+                stats_function.num_imported + stats_event.num_imported,
+            'num_duplicates':
+                stats_function.num_duplicates + stats_event.num_duplicates,
+            'num_ignored':
+                stats_function.num_ignored + stats_event.num_ignored,
         }
