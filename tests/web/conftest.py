@@ -16,6 +16,7 @@ def factories(transactional_db):
     from factories import (  # NOQA
         SignatureFactory,
         BytesSignatureFactory,
+        EventSignatureFactory
     )
 
     def is_factory(obj):

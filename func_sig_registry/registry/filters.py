@@ -4,7 +4,10 @@ from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
 )
 
-from .models import Signature
+from .models import (
+    EventSignature,
+    Signature,
+)
 
 
 class SignatureFilter(filters.FilterSet):
@@ -30,3 +33,30 @@ class SignatureFilter(filters.FilterSet):
             return qs.filter(bytes_signature__hex_signature=unprefixed_value)
         else:
             return qs.filter(bytes_signature__hex_signature__icontains=unprefixed_value)
+
+
+class EventSignatureFilter(filters.FilterSet):
+    created_at = filters.AllLookupsFilter(name='created_at')
+    text_signature = filters.CharFilter(name='text_signature',
+                                        lookup_type='icontains')
+    bytes_signature = filters.MethodFilter()
+    hex_signature = filters.MethodFilter()
+
+    class Meta:
+        model = EventSignature
+        fields = ['created_at', 'text_signature',
+                  'bytes_signature', 'hex_signature']
+
+    def filter_bytes_signature(self, name, qs, value):
+        if len(value) == 32:
+            return qs.filter(bytes_signature=value)
+        else:
+            return qs
+
+    def filter_hex_signature(self, name, qs, value):
+        unprefixed_value = remove_0x_prefix(value.lower())
+
+        if len(unprefixed_value) == 64:
+            return qs.filter(hex_signature=unprefixed_value)
+        else:
+            return qs.filter(hex_signature__icontains=unprefixed_value)
