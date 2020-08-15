@@ -59,7 +59,6 @@ def test_event_signature_filter_by_text_hex_signature(factories, filter_data, ex
 
 
 def test_event_signature_filter_by_bytes_signature(factories):
-    signature_dict = {}
     for key, value in TEST_EVENT_DATA.items():
         event_signature = factories.EventSignatureFactory(
             text_signature=value)
