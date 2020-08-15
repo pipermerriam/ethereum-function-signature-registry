@@ -6,14 +6,46 @@ from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
     retrieve_stats_from_import_results,
 )
+from func_sig_registry.utils.events_solidity import (
+    normalize_event_signature,
+)
 from func_sig_registry.utils.solidity import (
     normalize_function_signature,
 )
+
 
 from .models import (
     Signature,
     EventSignature,
 )
+
+
+class EventSignatureSerializer(serializers.ModelSerializer):
+    hex_signature = serializers.CharField(
+        source='get_hex_display',
+        read_only=True,
+    )
+    bytes_signature = serializers.CharField(
+        source='get_bytes_display',
+        read_only=True,
+    )
+
+    class Meta:
+        model = Signature
+        fields = (
+            'id', 'created_at', 'text_signature',
+            'hex_signature', 'bytes_signature',
+        )
+        read_only_fields = (
+            'created_at', 'hex_signature', 'bytes_signature',
+        )
+
+    def validate_text_signature(self, data):
+        try:
+            signature = normalize_event_signature(data)
+        except ValueError:
+            raise serializers.ValidationError('Unknown event signature format')
+        return signature
 
 
 class SignatureSerializer(serializers.ModelSerializer):
