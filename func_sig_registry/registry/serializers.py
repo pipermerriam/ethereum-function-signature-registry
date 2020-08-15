@@ -31,7 +31,7 @@ class EventSignatureSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Signature
+        model = EventSignature
         fields = (
             'id', 'created_at', 'text_signature',
             'hex_signature', 'bytes_signature',

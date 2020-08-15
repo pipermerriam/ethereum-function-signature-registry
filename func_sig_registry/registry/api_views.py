@@ -5,11 +5,18 @@ from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import filters
 
-from .models import Signature
+from .models import (
+    Signature,
+    EventSignature,
+)
 from .tasks import perform_github_import
-from .filters import SignatureFilter
+from .filters import (
+    SignatureFilter,
+    EventSignatureFilter
+)
 from .serializers import (
     SignatureSerializer,
+    EventSignatureSerializer,
     SolidityImportSerializer,
     ContractABISerializer,
     GithubWebhookSerializer,
@@ -26,6 +33,17 @@ class SignatureViewSet(mixins.CreateModelMixin,
     queryset = Signature.objects.all().select_related('bytes_signature')
     serializer_class = SignatureSerializer
     filter_class = SignatureFilter
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
+    ordering_fields = ('created_at',)
+
+
+class EventSignatureViewSet(mixins.CreateModelMixin,
+                            mixins.ListModelMixin,
+                            mixins.RetrieveModelMixin,
+                            viewsets.GenericViewSet):
+    queryset = EventSignature.objects.all()
+    serializer_class = EventSignatureSerializer
+    filter_class = EventSignatureFilter
     filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
     ordering_fields = ('created_at',)
 
