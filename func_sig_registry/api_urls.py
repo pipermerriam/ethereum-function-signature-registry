@@ -4,6 +4,7 @@ from rest_framework import routers
 
 from func_sig_registry.registry.api_views import (
     SignatureViewSet,
+    EventSignatureViewSet,
     SolidityImportAPIView,
     ContractABIImportAPIView,
     GithubPushWebhookAPIView,
@@ -12,6 +13,7 @@ from func_sig_registry.registry.api_views import (
 
 router = routers.SimpleRouter()
 router.register(r'signatures', SignatureViewSet)
+router.register(r'event-signatures', EventSignatureViewSet)
 
 urlpatterns = [
     url(r'import-solidity/$', SolidityImportAPIView.as_view(), name='import-solidity'),
