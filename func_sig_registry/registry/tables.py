@@ -25,6 +25,9 @@ class SignatureTable(tables.Table):
 
 
 class EventSignatureTable(tables.Table):
+    hex_signature = tables.TemplateColumn(
+        '<code>{{ record.get_hex_display }}</code>',
+    )
     class Meta:
         model = EventSignature
         fields = (
