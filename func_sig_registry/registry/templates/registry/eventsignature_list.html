@@ -1,0 +1,12 @@
+{% extends 'layout_full.html' %}
+{% load render_table from django_tables2 %}
+{% load rest_framework %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      {% render_table table %}
+    </div>
+  </div>
+{% endblock %}

@@ -29,8 +29,8 @@ class EventSignatureTable(tables.Table):
         model = EventSignature
         fields = (
             'id',
-            'text_signature'
-            'hex_signature'
+            'text_signature',
+            'hex_signature',
         )
         template = 'partials/table.html'
         attrs = {

@@ -26,6 +26,7 @@ from func_sig_registry.registry.views import (
     SignatureCreateView,
     SolidityImportView,
     ImportContractABIView,
+    EventSignatureListView,
 )
 
 
@@ -37,6 +38,7 @@ def lets_encrypt(request):
 urlpatterns = [
     url(r'^$', SiteIndexView.as_view(), name='site-index'),
     url(r'^signatures/$', SignatureListView.as_view(), name='signature-list'),
+    url(r'^event-signatures/$', EventSignatureListView.as_view(), name='event-signature-list'),
     url(r'^submit/$', SignatureCreateView.as_view(), name='signature-create'),
     url(r'^import-solidity/$', SolidityImportView.as_view(), name='import-solidity'),
     url(r'^import-abi/$', ImportContractABIView.as_view(), name='import-abi'),

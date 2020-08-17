@@ -22,7 +22,10 @@ from .models import (
     Signature,
     EventSignature,
 )
-from .tables import SignatureTable
+from .tables import (
+    SignatureTable,
+    EventSignatureTable,
+)
 from .forms import (
     SignatureForm,
     SolidityImportForm,
@@ -75,6 +78,18 @@ class SignatureListView(SingleTableView, ListView):
             serializer = SignatureSearchForm()
         context['serializer'] = serializer
         return context
+
+
+class EventSignatureListView(SingleTableView, ListView):
+    model = EventSignature
+    table_class = EventSignatureTable
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def get_queryset(self):
+        queryset = super(EventSignatureListView, self).get_queryset()
+        return queryset
 
 
 class SignatureCreateView(generics.CreateAPIView):
