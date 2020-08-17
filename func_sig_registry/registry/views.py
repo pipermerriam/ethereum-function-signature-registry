@@ -14,6 +14,9 @@ from django_tables2 import SingleTableView
 from func_sig_registry.utils.encoding import (
     remove_0x_prefix,
 )
+from func_sig_registry.utils.import_statistics import (
+    retrieve_stats_from_import_results,
+)
 
 from .models import (
     Signature,
@@ -116,22 +119,27 @@ class SolidityImportView(generics.GenericAPIView):
         if not serializer.is_valid():
             return Response({'serializer': serializer})
         results = serializer.save()
-        import_results = []
+        import_function_results = []
+        import_event_results = []
         for file_obj in results['source_files']:
-            import_results.extend(Signature.import_from_solidity_file(file_obj))
-            import_results.extend(EventSignature.import_from_solidity_file(file_obj))
-        num_processed = len(import_results)
+            import_function_results.extend(Signature.import_from_solidity_file(file_obj))
+            import_event_results.extend(EventSignature.import_from_solidity_file(file_obj))
+
+        stats_function = retrieve_stats_from_import_results(import_function_results)
+        stats_event = retrieve_stats_from_import_results(import_event_results)
+
+        num_processed = stats_function.num_processed + stats_event.num_processed
+        num_imported = stats_function.num_imported + stats_event.num_imported
+        num_duplicates = stats_function.num_duplicates + stats_event.num_duplicates
+        num_ignored = stats_function.num_ignored + stats_event.num_ignored
+
         if num_processed == 0:
-            num_imported = 0
-            num_duplicates = 0
             messages.info(self.request._request, "No function or event signatures found")
         else:
-            num_imported = sum(tuple(zip(*import_results))[1])
-            num_duplicates = num_processed - num_imported
             messages.success(
                 self.request._request,
-                "Found {0} function and event signatures.  Imported {1}, Skipped {2} duplicates.".format(
-                    num_processed, num_imported, num_duplicates,
+                "Found {0} function and event signatures.  Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
+                    num_processed, num_imported, num_ignored, num_ignored, num_duplicates,
                 ),
             )
         return redirect('signature-list')
