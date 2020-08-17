@@ -50,6 +50,9 @@ contract Foo {
     // functions with non-standard type args ignored
     function foo_11(bar a, ufixed b){}
 
+    // inavlid function name (ignored)
+    function function(uint a) {}
+
     // empty event
     event bar_1();
 
@@ -81,26 +84,33 @@ contract Foo {
     // commented event
     // event bar_9(uint8 b);
 
-    // invalid event, wrong argument type (ignored)
+    // invalid event, wrong argument type (not processed)
     event bar_10(function a);
 
-    // invalid, wrong argument delimeter (ignored)
-    event bar_10(uint a; uint b);
+    // invalid, wrong argument delimeter (not processed)
+    event bar_11(uint a; uint b);
+
+    // duplicate event signature (duplicated)
+    event bar_12(uint a, uint b);
+
+    // invalid event name
+    event event(uint a);
 }
 """
 
 
 def test_importing_solidity_source_file(api_client, factories):
     # function signature import expected stats:
-    # processed: 9 | imported: 7 | duplicated: 2
+    # processed: 10 | imported: 7 | duplicated: 2 | ignored: 1
     #
     # event signature import expected stats:
-    # processed: 9 | imported: 9 | duplicated: 0
+    # processed: 11 | imported: 9 | duplicated: 1 | ignored: 1
     # 
     # total:
-    # processed: 18 | imported 16 | duplicated: 2
+    # processed: 21 | imported 16 | duplicated: 3 | ignored: 2
     factories.SignatureFactory(text_signature='foo_7(int256)')
     factories.SignatureFactory(text_signature='foo_6(int256)')
+    factories.EventSignatureFactory(text_signature='bar_12(uint256,uint256)')
 
     import_url = reverse('api:import-solidity')
     source_file = BytesIO(CODE)
@@ -109,6 +119,7 @@ def test_importing_solidity_source_file(api_client, factories):
 
     assert response.status_code == status.HTTP_201_CREATED
     data = response.data
-    assert data['num_processed'] == 18
+    assert data['num_processed'] == 21
     assert data['num_imported'] == 16
-    assert data['num_duplicates'] == 2
+    assert data['num_duplicates'] == 3
+    assert data['num_ignored'] == 2
