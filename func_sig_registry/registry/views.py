@@ -139,7 +139,7 @@ class SolidityImportView(generics.GenericAPIView):
             messages.success(
                 self.request._request,
                 "Found {0} function and event signatures.  Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
-                    num_processed, num_imported, num_ignored, num_ignored, num_duplicates,
+                    num_processed, num_imported, num_ignored, num_duplicates,
                 ),
             )
         return redirect('signature-list')
