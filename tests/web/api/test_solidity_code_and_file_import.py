@@ -29,7 +29,7 @@ def test_importing_solidity_source_code(api_client, factories):
 
     response = api_client.post(import_url, {
         'source_code': CODE,
-        'source_fuke': source_file,
+        'source_file': source_file,
     }, format='multipart')
 
     assert response.status_code == status.HTTP_201_CREATED

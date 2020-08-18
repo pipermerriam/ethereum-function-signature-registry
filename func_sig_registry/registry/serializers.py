@@ -18,7 +18,7 @@ from func_sig_registry.utils.solidity import (
 
 
 from .models import (
-    Signature, 
+    Signature,
     EventSignature,
 )
 
@@ -88,23 +88,23 @@ class SolidityImportSerializer(serializers.Serializer):
     num_ignored = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
-        stats_function = empty_import_stats()
-        stats_event = empty_import_stats()
+        func_imports = []
+        event_imports = []
 
         if validated_data.get('source_file'):
-            stats_function = retrieve_stats_from_import_results(
-                Signature.import_from_solidity_file(validated_data['source_file'])
-            )
-            stats_event = retrieve_stats_from_import_results(
-                EventSignature.import_from_solidity_file(validated_data['source_file'])
-            )
+            func_imports.extend(Signature.import_from_solidity_file(
+                validated_data['source_file']))
+            event_imports.extend(EventSignature.import_from_solidity_file(
+                validated_data['source_file']))
+
         if validated_data.get('source_code'):
-            stats_function = retrieve_stats_from_import_results(
-                Signature.import_from_solidity_code(validated_data['source_code'])
-            )
-            stats_event = retrieve_stats_from_import_results(
-                EventSignature.import_from_solidity_code(validated_data['source_code'])
-            )
+            func_imports.extend(Signature.import_from_solidity_code(
+                validated_data['source_code']))
+            event_imports.extend(EventSignature.import_from_solidity_code(
+                validated_data['source_code']))
+
+        stats_function = retrieve_stats_from_import_results(func_imports)
+        stats_event = retrieve_stats_from_import_results(event_imports)
 
         return {
             'num_processed':
