@@ -2,9 +2,12 @@ import json
 
 from rest_framework import serializers
 
+from func_sig_registry.utils.import_statistics import (
+    retrieve_stats_from_import_results,
+    empty_import_stats,
+)
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
-    retrieve_stats_from_import_results,
 )
 from func_sig_registry.utils.events_solidity import (
     normalize_event_signature,
@@ -82,31 +85,36 @@ class SolidityImportSerializer(serializers.Serializer):
     num_processed = serializers.IntegerField(read_only=True)
     num_imported = serializers.IntegerField(read_only=True)
     num_duplicates = serializers.IntegerField(read_only=True)
+    num_ignored = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
-        import_results = []
+        func_imports = []
+        event_imports = []
 
         if validated_data.get('source_file'):
-            import_results.extend(Signature.import_from_solidity_file(
-                validated_data['source_file'],
-            ))
+            func_imports.extend(Signature.import_from_solidity_file(
+                validated_data['source_file']))
+            event_imports.extend(EventSignature.import_from_solidity_file(
+                validated_data['source_file']))
 
         if validated_data.get('source_code'):
-            import_results.extend(Signature.import_from_solidity_code(
-                validated_data['source_code'],
-            ))
+            func_imports.extend(Signature.import_from_solidity_code(
+                validated_data['source_code']))
+            event_imports.extend(EventSignature.import_from_solidity_code(
+                validated_data['source_code']))
 
-        num_processed = len(import_results)
-        if num_processed == 0:
-            num_imported = 0
-            num_duplicates = 0
-        else:
-            num_imported = sum(tuple(zip(*import_results))[1])
-            num_duplicates = num_processed - num_imported
+        stats_function = retrieve_stats_from_import_results(func_imports)
+        stats_event = retrieve_stats_from_import_results(event_imports)
+
         return {
-            'num_processed': num_processed,
-            'num_imported': num_imported,
-            'num_duplicates': num_duplicates,
+            'num_processed':
+                stats_function.num_processed + stats_event.num_processed,
+            'num_imported':
+                stats_function.num_imported + stats_event.num_imported,
+            'num_duplicates':
+                stats_function.num_duplicates + stats_event.num_duplicates,
+            'num_ignored':
+                stats_function.num_ignored + stats_event.num_ignored,
         }
 
 

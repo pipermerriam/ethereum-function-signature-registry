@@ -1,6 +1,6 @@
 import pytest
 
-from func_sig_registry.utils.abi import (
+from func_sig_registry.utils.import_statistics import (
     retrieve_stats_from_import_results,
 )
 

@@ -1,4 +1,3 @@
-from collections import namedtuple
 from typing import (
     Any,
     Dict,
@@ -139,34 +138,4 @@ def event_definition_to_text_signature(abi: Dict[str, Any]) -> str:
             [f"{collapse_if_tuple(abi_input)}{' indexed' if abi_input['indexed'] else ''}"
                 for abi_input in abi.get('inputs', [])]
         ),
-    )
-
-
-ImportStats = namedtuple('ImportStats', ['num_processed', 'num_imported',
-                                         'num_duplicates', 'num_ignored'])
-
-
-def retrieve_stats_from_import_results(raw_import_results):
-    num_processed = len(raw_import_results)
-
-    import_results = [
-        result
-        for result in raw_import_results
-        if result is not None
-    ]
-
-    num_ignored = num_processed - len(import_results)
-
-    if len(import_results) == 0:
-        num_imported = 0
-        num_duplicates = 0
-    else:
-        num_imported = sum(tuple(zip(*import_results))[1])
-        num_duplicates = len(import_results) - num_imported
-
-    return ImportStats(
-        num_processed=num_processed,
-        num_imported=num_imported,
-        num_duplicates=num_duplicates,
-        num_ignored=num_ignored,
     )

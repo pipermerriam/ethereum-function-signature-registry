@@ -9,9 +9,12 @@ from .models import (
     EventSignature,
 )
 
+from func_sig_registry.utils.import_statistics import (
+    retrieve_stats_from_import_results,
+)
+
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,
-    retrieve_stats_from_import_results,
 )
 
 from func_sig_registry.utils.solidity import (
