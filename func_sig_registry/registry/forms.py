@@ -28,6 +28,12 @@ class SignatureSearchForm(serializers.Serializer):
     )
 
 
+class EventSignatureSearchForm(serializers.Serializer):
+    bytes_signature = serializers.CharField(
+        style={'placeholder': '0x7805862f689e2f13df9f062ff482ad3ad112aca9e0847911ed832e158c525b33'},
+    )
+
+
 class SignatureForm(serializers.ModelSerializer):
     bytes4_signature = serializers.CharField(read_only=True,
                                              source='bytes_signature.get_hex_display')
