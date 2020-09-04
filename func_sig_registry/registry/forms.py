@@ -30,7 +30,7 @@ class SignatureSearchForm(serializers.Serializer):
 
 class EventSignatureSearchForm(serializers.Serializer):
     bytes_signature = serializers.CharField(
-        style={'placeholder': '0x7805862f689e2f13df9f062ff482ad3ad112aca9e0847911ed832e158c525b33'},
+        style={'placeholder': '0x82ff462f689e2f73df9fd8306282ad3ad112aca9e0847911e8051e158c525b33'},
     )
 
 
