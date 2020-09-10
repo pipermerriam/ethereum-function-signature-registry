@@ -21,6 +21,10 @@ from func_sig_registry.utils.solidity import (
     normalize_function_signature,
 )
 
+from func_sig_registry.utils.events_solidity import {
+    normalize_event_signature,
+}
+
 
 class SignatureSearchForm(serializers.Serializer):
     bytes4_signature = serializers.CharField(
@@ -45,6 +49,37 @@ class SignatureForm(serializers.ModelSerializer):
 
     def validate_text_signature(self, value):
         return normalize_function_signature(value)
+
+
+class AllSignatureCreateForm(serializers.Serializer):
+    function_text_signature = serializers.CharField(read_only=True)
+    event_text_signature = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        message = ''
+        if 'function_text_signature' in validated_data:
+            function_signature = Signature.import_from_raw_text_signature(
+                validated_data['function_text_signature'],
+                )
+            message += 'Added function signature {0} for function {1}'.format(
+                function_signature.bytes_signature.get_hex_display(),
+                function_signature.text_signature,
+            )
+        if 'event_text_signature' in validated_data:
+            event_signature = EventSignature.import_from_raw_text_signature(
+                validated_data['event_text_signature'],
+            )
+            message += 'Added event signature {0} for event {1}'.format(
+                event_signature.get_hex_display(),
+                event_signature.text_signature,
+            )
+        return message
+
+    def validate_function_text_signature(self, value):
+        return normalize_function_signature(value)
+    
+    def validate_event_text_signate(self, value):
+        return normalize_event_signature(value)
 
 
 class MultiFileField(serializers.FileField):
