@@ -56,24 +56,24 @@ class AllSignatureCreateForm(serializers.Serializer):
     event_text_signature = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
-        message = ''
+        message_parts = []
         if 'function_text_signature' in validated_data:
             function_signature = Signature.import_from_raw_text_signature(
                 validated_data['function_text_signature'],
                 )
-            message += 'Added function signature {0} for function {1}'.format(
+            message_parts.append('Added function signature {0} for function {1}.'.format(
                 function_signature.bytes_signature.get_hex_display(),
                 function_signature.text_signature,
-            )
+            ))
         if 'event_text_signature' in validated_data:
             event_signature = EventSignature.import_from_raw_text_signature(
                 validated_data['event_text_signature'],
             )
-            message += 'Added event signature {0} for event {1}'.format(
+            message_parts.append('Added event signature {0} for event {1}.'.format(
                 event_signature.get_hex_display(),
                 event_signature.text_signature,
-            )
-        return message
+            ))
+        return ' '.join(message_parts)
 
     def validate_function_text_signature(self, value):
         return normalize_function_signature(value)
