@@ -21,9 +21,9 @@ from func_sig_registry.utils.solidity import (
     normalize_function_signature,
 )
 
-from func_sig_registry.utils.events_solidity import {
+from func_sig_registry.utils.events_solidity import (
     normalize_event_signature,
-}
+)
 
 
 class SignatureSearchForm(serializers.Serializer):
@@ -52,12 +52,11 @@ class SignatureForm(serializers.ModelSerializer):
 
 
 class AllSignatureCreateForm(serializers.Serializer):
-    function_text_signature = serializers.CharField(read_only=True)
-    event_text_signature = serializers.CharField(read_only=True)
+    text_signature = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
         message_parts = []
-        if 'function_text_signature' in validated_data:
+        if 'function_signature' in validated_data['text_signature']:
             function_signature = Signature.import_from_raw_text_signature(
                 validated_data['function_text_signature'],
                 )
@@ -65,7 +64,7 @@ class AllSignatureCreateForm(serializers.Serializer):
                 function_signature.bytes_signature.get_hex_display(),
                 function_signature.text_signature,
             ))
-        if 'event_text_signature' in validated_data:
+        if 'event_signature' in validated_data['text_signature']:
             event_signature = EventSignature.import_from_raw_text_signature(
                 validated_data['event_text_signature'],
             )
@@ -75,11 +74,24 @@ class AllSignatureCreateForm(serializers.Serializer):
             ))
         return ' '.join(message_parts)
 
-    def validate_function_text_signature(self, value):
-        return normalize_function_signature(value)
-    
-    def validate_event_text_signate(self, value):
-        return normalize_event_signature(value)
+    def validate_text_signature(self, value):
+        validated_signatures = dict()
+        try:
+            normalized_function_signature = normalize_function_signature(value)
+            validated_signatures.update({'function_signature' : normalized_function_signature})
+        except:
+            pass
+
+        try:
+            normalized_event_signature = normalize_event_signature(value)
+            validated_signatures.update({'event_signature' : normalize_event_signature})
+        except:
+            pass
+
+        if len(validated_signatures) == 0:
+            raise ValueError('Could not parse given signature')
+        return validated_signatures
+
 
 
 class MultiFileField(serializers.FileField):
