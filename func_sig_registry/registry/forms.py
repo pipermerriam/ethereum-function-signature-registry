@@ -52,27 +52,31 @@ class SignatureForm(serializers.ModelSerializer):
 
 
 class AllSignatureCreateForm(serializers.Serializer):
-    text_signature = serializers.CharField(read_only=True)
+    text_signature = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
         message_parts = []
         if 'function_signature' in validated_data['text_signature']:
-            function_signature = Signature.import_from_raw_text_signature(
-                validated_data['function_text_signature'],
+            function_signature_tuple = Signature.import_from_raw_text_signature(
+                validated_data['text_signature']['function_signature'],
                 )
+            function_signature = function_signature_tuple[0]
             message_parts.append('Added function signature {0} for function {1}.'.format(
                 function_signature.bytes_signature.get_hex_display(),
                 function_signature.text_signature,
             ))
         if 'event_signature' in validated_data['text_signature']:
-            event_signature = EventSignature.import_from_raw_text_signature(
-                validated_data['event_text_signature'],
+            event_signature_tuple = EventSignature.import_from_raw_text_signature(
+                validated_data['text_signature']['event_signature'],
             )
+            event_signature = event_signature_tuple[0]
             message_parts.append('Added event signature {0} for event {1}.'.format(
                 event_signature.get_hex_display(),
                 event_signature.text_signature,
             ))
-        return ' '.join(message_parts)
+        return {
+            'response_message': ' '.join(message_parts),
+            }
 
     def validate_text_signature(self, value):
         validated_signatures = dict()
@@ -84,7 +88,7 @@ class AllSignatureCreateForm(serializers.Serializer):
 
         try:
             normalized_event_signature = normalize_event_signature(value)
-            validated_signatures.update({'event_signature' : normalize_event_signature})
+            validated_signatures.update({'event_signature' : normalized_event_signature})
         except:
             pass
 

@@ -27,6 +27,7 @@ from .tables import (
     EventSignatureTable,
 )
 from .forms import (
+    AllSignatureCreateForm,
     SignatureForm,
     SolidityImportForm,
     SignatureSearchForm,
@@ -119,7 +120,7 @@ class EventSignatureListView(SingleTableView, ListView):
 class SignatureCreateView(generics.CreateAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'registry/signature_create.html'
-    serializer_class = SignatureForm
+    serializer_class = AllSignatureCreateForm
 
     def get(self, *args, **kwargs):
         serializer = self.get_serializer()
@@ -131,13 +132,10 @@ class SignatureCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        signature = serializer.save()
+        results = serializer.save()
         messages.success(
             self.request._request,
-            "Added signature '{0}' for function '{1}'".format(
-                signature.bytes_signature.get_hex_display(),
-                signature.text_signature,
-            ),
+            results['response_message'],
         )
         return redirect('signature-list')
 
