@@ -11,4 +11,4 @@ def test_getting_repository_solidity_files():
         'pipermerriam',
         'ethereum-alarm-clock',
     ))
-    assert len(file_list) == 8
+    assert len(file_list) == 24

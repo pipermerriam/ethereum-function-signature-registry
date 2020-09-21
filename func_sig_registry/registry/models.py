@@ -63,7 +63,7 @@ class Signature(models.Model):
         try:
             self.text_signature = normalize_function_signature(self.text_signature)
         except ValueError:
-            raise ValidationError('Unknown signature format')
+            raise ValidationError('Unknown function signature format')
 
     class Meta:
         unique_together = (
@@ -89,10 +89,10 @@ class Signature(models.Model):
         try:
             text_signature = normalize_function_signature(raw_function_signature)
         except ValueError:
-            logger.error("error signature: %s", raw_function_signature)
+            logger.error("error function signature: %s", raw_function_signature)
             return None
         else:
-            logger.info("importing signature: %s", text_signature)
+            logger.info("importing function signature: %s", text_signature)
             return cls.objects.get_or_create(
                 text_signature=text_signature,
             )
@@ -122,16 +122,6 @@ class Signature(models.Model):
             cls.import_from_raw_text_signature(raw_signature)
             for raw_signature in function_signatures
         ]
-
-    @classmethod
-    def import_from_github_repository(cls, login_or_name, repository, branch='master'):
-        for file_path in get_repository_solidity_files(login_or_name, repository, branch):
-            logger.info("importing solidity file: %s", file_path)
-            with open(file_path) as solidity_file:
-                try:
-                    cls.import_from_solidity_file(solidity_file)
-                except UnicodeDecodeError:
-                    logger.error('unicode error reading solidity file: %s', file_path)
 
 
 class BytesSignature(models.Model):
@@ -180,7 +170,7 @@ class EventSignature(models.Model):
             self.text_signature = normalize_event_signature(
                 self.text_signature)
         except ValueError:
-            raise ValidationError('Unknown signature format')
+            raise ValidationError('Unknown event signature format')
 
     class Meta:
         ordering = ('-created_at',)
@@ -207,10 +197,10 @@ class EventSignature(models.Model):
         try:
             text_signature = normalize_event_signature(raw_event_signature)
         except ValueError:
-            logger.error("error signature: %s", raw_event_signature)
+            logger.error("error event signature: %s", raw_event_signature)
             return None
         else:
-            logger.info("importing signature: %s", text_signature)
+            logger.info("importing event signature: %s", text_signature)
             return cls.objects.get_or_create(
                 text_signature=text_signature,
             )
@@ -240,13 +230,3 @@ class EventSignature(models.Model):
             cls.import_from_raw_text_signature(raw_signature)
             for raw_signature in event_signatures
         ]
-
-    @classmethod
-    def import_from_github_repository(cls, login_or_name, repository, branch='master'):
-        for file_path in get_repository_solidity_files(login_or_name, repository, branch):
-            logger.info("importing solidity file: %s", file_path)
-            with open(file_path) as solidity_file:
-                try:
-                    cls.import_from_solidity_file(solidity_file)
-                except UnicodeDecodeError:
-                    logger.error('unicode error reading solidity file: %s', file_path)
