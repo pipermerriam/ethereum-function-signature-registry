@@ -105,7 +105,7 @@ def test_importing_solidity_source_file(api_client, factories):
     #
     # event signature import expected stats:
     # processed: 11 | imported: 9 | duplicated: 1 | ignored: 1
-    # 
+    #
     # total:
     # processed: 21 | imported 16 | duplicated: 3 | ignored: 2
     factories.SignatureFactory(text_signature='foo_7(int256)')

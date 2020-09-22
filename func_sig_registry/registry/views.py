@@ -101,13 +101,13 @@ class EventSignatureListView(SingleTableView, ListView):
                 )
             else:
                 return queryset.filter(
-                    hex_signature__icontains=unprefixed_hex_signature,  #NOQA
+                    hex_signature__icontains=unprefixed_hex_signature,  # NOQA
                 )
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super(EventSignatureListView, self).get_context_data(**kwargs)
-        if self.request.GET.get('hex_signature'):
+        if self.request.GET.get('bytes_signature'):
             serializer = EventSignatureSearchForm(data=self.request.GET)
             serializer.is_valid()
         else:
