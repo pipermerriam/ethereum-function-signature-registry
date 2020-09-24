@@ -72,12 +72,12 @@ class SignatureListView(SingleTableView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SignatureListView, self).get_context_data(**kwargs)
-        if self.request.GET.get('bytes4_signature'):
-            serializer = SignatureSearchForm(data=self.request.GET)
-            serializer.is_valid()
-        else:
-            serializer = SignatureSearchForm()
-        context['serializer'] = serializer
+        # if self.request.GET.get('bytes4_signature'):
+        #     serializer = SignatureSearchForm(data=self.request.GET)
+        #     serializer.is_valid()
+        # else:
+        #     serializer = SignatureSearchForm()
+        context['serializer'] = SignatureSearchForm()
         return context
 
 
@@ -112,7 +112,7 @@ class EventSignatureListView(SingleTableView, ListView):
             serializer.is_valid()
         else:
             serializer = EventSignatureSearchForm()
-        context['serializer'] = EventSignatureSearchForm()
+        context['serializer'] = serializer
         return context
 
 
