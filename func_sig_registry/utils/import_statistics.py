@@ -3,6 +3,7 @@ from collections import namedtuple
 ImportStats = namedtuple('ImportStats', ['num_processed', 'num_imported',
                                          'num_duplicates', 'num_ignored'])
 
+
 def empty_import_stats():
     return ImportStats(
         num_processed=0,
@@ -10,6 +11,7 @@ def empty_import_stats():
         num_duplicates=0,
         num_ignored=0,
     )
+
 
 def retrieve_stats_from_import_results(raw_import_results):
     num_processed = len(raw_import_results)

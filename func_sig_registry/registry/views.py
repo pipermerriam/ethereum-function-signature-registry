@@ -138,7 +138,8 @@ class SolidityImportView(generics.GenericAPIView):
         else:
             messages.success(
                 self.request._request,
-                "Found {0} function and event signatures.  Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
+                "Found {0} function and event signatures.  Imported {1}, \
+                    Ignored {2}, Skipped {3} duplicates.".format(
                     num_processed, num_imported, num_ignored, num_duplicates,
                 ),
             )
@@ -173,7 +174,8 @@ class ImportContractABIView(generics.GenericAPIView):
 
         messages.success(
             self.request._request,
-            "Found {0} function and event signatures.  Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
+            "Found {0} function and event signatures.  \
+                Imported {1}, Ignored {2}, Skipped {3} duplicates.".format(
                 num_processed, num_imported, num_ignored, num_duplicates
             ),
         )
