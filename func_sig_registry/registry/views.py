@@ -122,6 +122,24 @@ class SignatureCreateView(generics.CreateAPIView):
     template_name = 'registry/signature_create.html'
     serializer_class = AllSignatureCreateForm
 
+    def compose_message(self, function_signature, event_signature):
+        message_parts = []
+        if function_signature is not None:
+            signature, created = function_signature
+            if created:
+                message_parts.append('Added function signature {0} for function {1}.'.format(
+                    signature.bytes_signature.get_hex_display(),
+                    signature.text_signature,
+                ))
+        if event_signature is not None:
+            signature, created = event_signature
+            if created:
+                message_parts.append('Added event signature {0} for event {1}.'.format(
+                    signature.get_hex_display(),
+                    signature.text_signature,
+                ))
+        return ' '.join(message_parts)
+
     def get(self, *args, **kwargs):
         serializer = self.get_serializer()
         return Response({
@@ -132,10 +150,10 @@ class SignatureCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        results = serializer.save()
+        function_signature, event_signature = serializer.save()
         messages.success(
             self.request._request,
-            results['response_message'],
+            self.compose_message(function_signature, event_signature)
         )
         return redirect('signature-list')
 

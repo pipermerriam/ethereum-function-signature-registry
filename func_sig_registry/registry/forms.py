@@ -55,53 +55,45 @@ class AllSignatureCreateForm(serializers.Serializer):
     text_signature = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        message_parts = []
+        signatures = dict()
         if 'function_signature' in validated_data['text_signature']:
-            function_signature_tuple = Signature.import_from_raw_text_signature(
+            function_signature = Signature.import_from_raw_text_signature(
                 validated_data['text_signature']['function_signature'],
-                )
-            function_signature = function_signature_tuple[0]
-            message_parts.append('Added function signature {0} for function {1}.'.format(
-                function_signature.bytes_signature.get_hex_display(),
-                function_signature.text_signature,
-            ))
+            )
+            signatures.update({'function_signature': function_signature})
         if 'event_signature' in validated_data['text_signature']:
-            event_signature_tuple = EventSignature.import_from_raw_text_signature(
+            event_signature = EventSignature.import_from_raw_text_signature(
                 validated_data['text_signature']['event_signature'],
             )
-            event_signature = event_signature_tuple[0]
-            message_parts.append('Added event signature {0} for event {1}.'.format(
-                event_signature.get_hex_display(),
-                event_signature.text_signature,
-            ))
-        return {
-            'response_message': ' '.join(message_parts),
-            }
+            signatures.update({'event_signature': event_signature})
+        return (signatures.get('function_signature', None),
+                signatures.get('event_signature', None))
 
     def validate_text_signature(self, value):
         validated_signatures = dict()
+        exceptions = []
         try:
             normalized_function_signature = normalize_function_signature(value)
-            validated_signatures.update({'function_signature' : normalized_function_signature})
-        except:
-            pass
+            validated_signatures.update({'function_signature': normalized_function_signature})
+        except ValueError as e:
+            exceptions.append(e)
 
         try:
             normalized_event_signature = normalize_event_signature(value)
-            validated_signatures.update({'event_signature' : normalized_event_signature})
-        except:
-            pass
+            validated_signatures.update({'event_signature': normalized_event_signature})
+        except ValueError as e:
+            exceptions.append(e)
 
         if len(validated_signatures) == 0:
-            raise ValueError('Could not parse given signature')
+            raise ValueError(exceptions)
         return validated_signatures
-
 
 
 class MultiFileField(serializers.FileField):
     """
     Allow file uploads via inputs with `multipule=true` enabled.
     """
+
     def __init__(self, *args, **kwargs):
         kwargs['style'] = {'multiple': True, 'template': 'partials/file_input.html'}
         super(MultiFileField, self).__init__(*args, **kwargs)
