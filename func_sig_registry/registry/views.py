@@ -22,11 +22,15 @@ from .models import (
     Signature,
     EventSignature,
 )
-from .tables import SignatureTable
+from .tables import (
+    SignatureTable,
+    EventSignatureTable,
+)
 from .forms import (
     SignatureForm,
     SolidityImportForm,
     SignatureSearchForm,
+    EventSignatureSearchForm,
     ContractABIForm,
 )
 
@@ -73,6 +77,41 @@ class SignatureListView(SingleTableView, ListView):
             serializer.is_valid()
         else:
             serializer = SignatureSearchForm()
+        context['serializer'] = serializer
+        return context
+
+
+class EventSignatureListView(SingleTableView, ListView):
+    model = EventSignature
+    table_class = EventSignatureTable
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def get_queryset(self):
+        queryset = super(EventSignatureListView, self).get_queryset()
+
+        if self.request.GET.get('bytes_signature'):
+            hex_signature = self.request.GET['bytes_signature']
+            unprefixed_hex_signature = remove_0x_prefix(hex_signature.lower())
+
+            if len(unprefixed_hex_signature) == 64:
+                return queryset.filter(
+                    hex_signature=unprefixed_hex_signature,
+                )
+            else:
+                return queryset.filter(
+                    hex_signature__icontains=unprefixed_hex_signature,  # NOQA
+                )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(EventSignatureListView, self).get_context_data(**kwargs)
+        if self.request.GET.get('bytes_signature'):
+            serializer = EventSignatureSearchForm(data=self.request.GET)
+            serializer.is_valid()
+        else:
+            serializer = EventSignatureSearchForm()
         context['serializer'] = serializer
         return context
 
