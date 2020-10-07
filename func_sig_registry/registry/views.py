@@ -127,15 +127,13 @@ class SignatureCreateView(generics.CreateAPIView):
         if function_signature is not None:
             signature, created = function_signature
             if created:
-                message_parts.append('Added function signature {0} for function {1}.'.format(
-                    signature.bytes_signature.get_hex_display(),
+                message_parts.append('Added function signature {0}.'.format(
                     signature.text_signature,
                 ))
         if event_signature is not None:
             signature, created = event_signature
             if created:
-                message_parts.append('Added event signature {0} for event {1}.'.format(
-                    signature.get_hex_display(),
+                message_parts.append('Added event signature {0}.'.format(
                     signature.text_signature,
                 ))
         return ' '.join(message_parts)
@@ -156,7 +154,7 @@ class SignatureCreateView(generics.CreateAPIView):
                 ))
         return ' '.join(message_parts)
 
-    def any_signature_created(slef, function_signature, event_signature):
+    def any_signature_created(self, function_signature, event_signature):
         function_created = (function_signature is not None) and function_signature[1]
         event_created = (event_signature is not None) and event_signature[1]
         return function_created or event_created
