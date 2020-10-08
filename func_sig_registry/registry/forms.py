@@ -21,6 +21,10 @@ from func_sig_registry.utils.solidity import (
     normalize_function_signature,
 )
 
+from func_sig_registry.utils.events_solidity import (
+    normalize_event_signature,
+)
+
 
 class SignatureSearchForm(serializers.Serializer):
     bytes4_signature = serializers.CharField(
@@ -47,10 +51,49 @@ class SignatureForm(serializers.ModelSerializer):
         return normalize_function_signature(value)
 
 
+class AllSignatureCreateForm(serializers.Serializer):
+    text_signature = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        if 'function_signature' in validated_data['text_signature']:
+            function_signature = Signature.import_from_raw_text_signature(
+                validated_data['text_signature']['function_signature'],
+            )
+        else:
+            function_signature = None
+        if 'event_signature' in validated_data['text_signature']:
+            event_signature = EventSignature.import_from_raw_text_signature(
+                validated_data['text_signature']['event_signature'],
+            )
+        else:
+            event_signature = None
+        return (function_signature, event_signature)
+
+    def validate_text_signature(self, value):
+        validated_signatures = dict()
+        exceptions = []
+        try:
+            normalized_function_signature = normalize_function_signature(value)
+            validated_signatures.update({'function_signature': normalized_function_signature})
+        except ValueError as e:
+            exceptions.append(e)
+
+        try:
+            normalized_event_signature = normalize_event_signature(value)
+            validated_signatures.update({'event_signature': normalized_event_signature})
+        except ValueError as e:
+            exceptions.append(e)
+
+        if len(validated_signatures) == 0:
+            raise ValueError(exceptions)
+        return validated_signatures
+
+
 class MultiFileField(serializers.FileField):
     """
     Allow file uploads via inputs with `multipule=true` enabled.
     """
+
     def __init__(self, *args, **kwargs):
         kwargs['style'] = {'multiple': True, 'template': 'partials/file_input.html'}
         super(MultiFileField, self).__init__(*args, **kwargs)

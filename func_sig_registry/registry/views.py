@@ -27,6 +27,7 @@ from .tables import (
     EventSignatureTable,
 )
 from .forms import (
+    AllSignatureCreateForm,
     SignatureForm,
     SolidityImportForm,
     SignatureSearchForm,
@@ -119,7 +120,44 @@ class EventSignatureListView(SingleTableView, ListView):
 class SignatureCreateView(generics.CreateAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'registry/signature_create.html'
-    serializer_class = SignatureForm
+    serializer_class = AllSignatureCreateForm
+
+    def compose_success_message(self, function_signature, event_signature):
+        message_parts = []
+        if function_signature is not None:
+            signature, created = function_signature
+            if created:
+                message_parts.append('Added function signature {0}.'.format(
+                    signature.text_signature,
+                ))
+        if event_signature is not None:
+            signature, created = event_signature
+            if created:
+                message_parts.append('Added event signature {0}.'.format(
+                    signature.text_signature,
+                ))
+        return ' '.join(message_parts)
+
+    def compose_info_message(self, function_signature, event_signature):
+        message_parts = []
+        if function_signature is not None:
+            signature, created = function_signature
+            if not created:
+                message_parts.append('Function signature {0} already exists.'.format(
+                    signature.text_signature,
+                ))
+        if event_signature is not None:
+            signature, created = event_signature
+            if not created:
+                message_parts.append('Event signature {0} already exists.'.format(
+                    signature.text_signature,
+                ))
+        return ' '.join(message_parts)
+
+    def any_signature_created(self, function_signature, event_signature):
+        function_created = (function_signature is not None) and function_signature[1]
+        event_created = (event_signature is not None) and event_signature[1]
+        return function_created or event_created
 
     def get(self, *args, **kwargs):
         serializer = self.get_serializer()
@@ -131,14 +169,20 @@ class SignatureCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=self.request.data)
         if not serializer.is_valid():
             return Response({'serializer': serializer})
-        signature = serializer.save()
-        messages.success(
-            self.request._request,
-            "Added signature '{0}' for function '{1}'".format(
-                signature.bytes_signature.get_hex_display(),
-                signature.text_signature,
-            ),
-        )
+        function_signature, event_signature = serializer.save()
+
+        # Check if any signatures were created, otherwise notify the user
+        # about existing signatures
+        if self.any_signature_created(function_signature, event_signature):
+            messages.success(
+                self.request._request,
+                self.compose_success_message(function_signature, event_signature)
+            )
+        else:
+            messages.info(
+                self.request._request,
+                self.compose_info_message(function_signature, event_signature)
+            )
         return redirect('signature-list')
 
 
