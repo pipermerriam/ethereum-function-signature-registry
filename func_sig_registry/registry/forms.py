@@ -55,19 +55,19 @@ class AllSignatureCreateForm(serializers.Serializer):
     text_signature = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        signatures = dict()
         if 'function_signature' in validated_data['text_signature']:
             function_signature = Signature.import_from_raw_text_signature(
                 validated_data['text_signature']['function_signature'],
             )
-            signatures.update({'function_signature': function_signature})
+        else:
+            function_signature = None
         if 'event_signature' in validated_data['text_signature']:
             event_signature = EventSignature.import_from_raw_text_signature(
                 validated_data['text_signature']['event_signature'],
             )
-            signatures.update({'event_signature': event_signature})
-        return (signatures.get('function_signature', None),
-                signatures.get('event_signature', None))
+        else:
+            event_signature = None
+        return (function_signature, event_signature)
 
     def validate_text_signature(self, value):
         validated_signatures = dict()
