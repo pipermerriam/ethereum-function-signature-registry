@@ -28,7 +28,6 @@ from .tables import (
 )
 from .forms import (
     AllSignatureCreateForm,
-    SignatureForm,
     SolidityImportForm,
     SignatureSearchForm,
     EventSignatureSearchForm,
