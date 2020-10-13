@@ -17,23 +17,23 @@ common: &common
         name: merge pull request base (3nd try)
         command: ./.circleci/merge_pr.sh
         when: on_fail
-    - restore_cache:
-        keys:
-          - cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
+    # - restore_cache:
+    #     keys:
+    #       - cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
     - run:
         name: install dependencies
         command: pip install --user tox
     - run:
         name: run tox
         command: ~/.local/bin/tox -r
-    - save_cache:
-        paths:
-          - .hypothesis
-          - .tox
-          - ~/.cache/pip
-          - ~/.local
-          - ./eggs
-        key: cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
+    # - save_cache:
+    #     paths:
+    #       - .hypothesis
+    #       - .tox
+    #       - ~/.cache/pip
+    #       - ~/.local
+    #       - ./eggs
+    #     key: cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
 
 jobs:
   flake8:
