@@ -21,13 +21,25 @@ common: &common
     #     keys:
     #       - cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
     - run:
-        name: install dependencies
-        command: pip install --user tox
+        name: setup ppa
+        command: |
+          add-apt-repository -y ppa:ethereum/ethereum
+          apt-get update
     - run:
-          name: setup env variables
-          command: |
-            echo 'export REDIS_URL=redis://localhost:6379' >> $BASH_ENV
-            echo 'export DATABASE_URL=postgres://postgres@localhost/func_sig_registry' >> $BASH_ENV
+        name: install dependencies
+        command: |
+          apt-get install -y ethereum
+          pip install setuptools --upgrade
+          pip install tox
+    - run:
+        name: database setup
+        command: |
+          psql -c 'create database func_sig_registry;' -U postgres
+    - run:
+        name: setup env variables
+        command: |
+          echo 'export REDIS_URL=redis://localhost:6379' >> $BASH_ENV
+          echo 'export DATABASE_URL=postgres://postgres@localhost/func_sig_registry' >> $BASH_ENV
     - run:
         name: run tox
         command: ~/.local/bin/tox -r
