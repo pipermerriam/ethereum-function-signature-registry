@@ -24,6 +24,10 @@ common: &common
         name: install dependencies
         command: pip install --user tox
     - run:
+        name: setup env variables
+        command: echo 'export REDIS_URL="redis://localhost:6379"' >> $BASH_ENV
+        command: echo 'export DATABASE_URL="postgres://postgres@localhost/func_sig_registry"' >> $BASH_ENV
+    - run:
         name: run tox
         command: ~/.local/bin/tox -r
     # - save_cache:
