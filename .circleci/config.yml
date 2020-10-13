@@ -24,6 +24,11 @@ common: &common
         name: install dependencies
         command: pip install --user tox
     - run:
+          name: setup env variables
+          command: |
+            echo 'export REDIS_URL=redis://localhost:6379' >> $BASH_ENV
+            echo 'export DATABASE_URL=postgres://postgres@localhost/func_sig_registry' >> $BASH_ENV
+    - run:
         name: run tox
         command: ~/.local/bin/tox -r
     # - save_cache:
@@ -34,7 +39,6 @@ common: &common
     #       - ~/.local
     #       - ./eggs
     #     key: cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
-
 jobs:
   flake8:
     <<: *common
@@ -48,13 +52,6 @@ jobs:
       - image: circleci/python:3.6
         environment:
           TOXENV: py36-django19
-    steps:
-      - run:
-          name: setup env variables
-          command: |
-            echo 'export REDIS_URL=redis://localhost:6379' >> $BASH_ENV
-            echo 'export DATABASE_URL=postgres://postgres@localhost/func_sig_registry' >> $BASH_ENV
-
 workflows:
   version: 2
   test:
