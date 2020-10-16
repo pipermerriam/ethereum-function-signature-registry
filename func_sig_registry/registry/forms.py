@@ -76,16 +76,16 @@ class AllSignatureCreateForm(serializers.Serializer):
             normalized_function_signature = normalize_function_signature(value)
             validated_signatures.update({'function_signature': normalized_function_signature})
         except ValueError as e:
-            exceptions_messages.append('Function import error: ' + str(e))
+            exceptions_messages.append(f'Function import error: {str(e)}.')
 
         try:
             normalized_event_signature = normalize_event_signature(value)
             validated_signatures.update({'event_signature': normalized_event_signature})
         except ValueError as e:
-            exceptions_messages.append('Event import error: ' + str(e))
+            exceptions_messages.append(f'Event import error: {str(e)}.')
 
         if len(validated_signatures) == 0:
-            raise ValueError('. '.join(exceptions_messages))
+            raise ValueError(' '.join(exceptions_messages))
         return validated_signatures
 
 

@@ -85,7 +85,6 @@ def test_only_event_siganture_created_notification():
 
 @pytest.mark.django_db
 def test_error_notification():
-    # Function signature should not be created because signature is anonymous.
     signature = 'foo(List a)'
 
     client = Client(HTTP_USER_AGENT='Mozilla/5.0', enforce_csrf_checks=True)
@@ -93,5 +92,21 @@ def test_error_notification():
 
     assert(response.status_code == status.HTTP_200_OK)
     content = response.content.decode('utf-8')
-    assert('Function import error: function args contain non-standard types.' in content)
+    assert('Function import error: function args contain non-standard types' in content)
     assert('Event import error: event args contain non-standard types' in content)
+
+
+@pytest.mark.django_db
+def test_specific_error_messages_displayed():
+    # Function signature can not be created, because text contains anonynous keyword.
+    # Event signature can not be created either, because it has too many indexed arguments.
+    signature = 'foo(uint indexed a, uint indexed b, uint indexed c, \
+        uint indexed d, uint indexed e) anonymous'
+
+    client = Client(HTTP_USER_AGENT='Mozilla/5.0', enforce_csrf_checks=True)
+    response = client.post('/submit/', {'text_signature': signature}, follow=True)
+
+    assert(response.status_code == status.HTTP_200_OK)
+    content = response.content.decode('utf-8')
+    assert('Function import error: Could not parse function signature' in content)
+    assert('Event import error: Too many indexed arguments' in content)
