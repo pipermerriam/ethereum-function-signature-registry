@@ -81,3 +81,17 @@ def test_only_event_siganture_created_notification():
     content = response.content.decode('utf-8')
     assert('Added event signature {0}'.format(normalized) in content)
     assert('Added function signature {0}.'.format(normalized) not in content)
+
+
+@pytest.mark.django_db
+def test_error_notification():
+    # Function signature should not be created because signature is anonymous.
+    signature = 'foo(List a)'
+
+    client = Client(HTTP_USER_AGENT='Mozilla/5.0', enforce_csrf_checks=True)
+    response = client.post('/submit/', {'text_signature': signature}, follow=True)
+
+    assert(response.status_code == status.HTTP_200_OK)
+    content = response.content.decode('utf-8')
+    assert('Function import error: function args contain non-standard types.' in content)
+    assert('Event import error: event args contain non-standard types' in content)
