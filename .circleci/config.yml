@@ -32,7 +32,7 @@ common: &common
         name: Waiting for Postgres to be ready
         command: |
           if [[ -z "${POSTGRES_USER}" ]]; then
-            exit 0
+            echo No need for Postgres && exit 0
           fi
           for i in `seq 1 10`;
           do
