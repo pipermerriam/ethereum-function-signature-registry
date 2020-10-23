@@ -26,11 +26,10 @@ def perform_github_import(login_or_name, repository, branch):
     logger.info("Importing github repo %s/%s/%s", login_or_name,
                 repository, branch)
     for file_path in get_repository_solidity_files(login_or_name, repository, branch):
-            logger.info("importing solidity file: %s", file_path)
-            with open(file_path) as solidity_file:
-                try:
-                    Signature.import_from_solidity_file(solidity_file)
-                    EventSignature.import_from_solidity_file(solidity_file)
-                except UnicodeDecodeError:
-                    logger.error('unicode error reading solidity file: %s',
-                                 file_path)
+        logger.info("importing solidity file: %s", file_path)
+        with open(file_path) as solidity_file:
+            try:
+                Signature.import_from_solidity_file(solidity_file)
+                EventSignature.import_from_solidity_file(solidity_file)
+            except UnicodeDecodeError:
+                logger.error('unicode error reading solidity file: %s', file_path)

@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from func_sig_registry.utils.import_statistics import (
     retrieve_stats_from_import_results,
-    empty_import_stats,
 )
 from func_sig_registry.utils.abi import (
     is_valid_contract_abi,

@@ -9,9 +9,6 @@ from django.core.validators import (
 from django.core.exceptions import ValidationError
 from eth_utils import event_signature_to_log_topic
 
-from func_sig_registry.utils.github import (
-    get_repository_solidity_files,
-)
 from func_sig_registry.utils.solidity import (
     extract_function_signatures,
     normalize_function_signature,

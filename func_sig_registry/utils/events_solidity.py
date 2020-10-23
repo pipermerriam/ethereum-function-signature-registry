@@ -1,8 +1,5 @@
 import itertools
 import re
-from typing import (
-    List,
-)
 
 from eth_abi.exceptions import (
     ParseError,
@@ -11,15 +8,11 @@ from eth_abi.exceptions import (
 from eth_abi.grammar import (
     parse as parse_type,
     normalize as normalize_type,
-    ABIType,
-    TupleType,
-    BasicType,
 )
 
 from func_sig_registry.utils.solidity import (
     get_arg_types,
     validate_standard_type,
-    normalize_function_signature
 )
 
 DYNAMIC_TYPES = ['bytes', 'string']
