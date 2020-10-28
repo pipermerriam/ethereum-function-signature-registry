@@ -166,8 +166,17 @@ class SignatureCreateView(generics.CreateAPIView):
 
     def post(self, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
-        if not serializer.is_valid():
-            return Response({'serializer': serializer})
+
+        try:
+            if not serializer.is_valid():
+                return Response({'serializer': serializer})
+        except ValueError as e:
+            messages.error(
+                self.request._request,
+                str(e)
+            )
+            return redirect('/submit')
+
         function_signature, event_signature = serializer.save()
 
         # Check if any signatures were created, otherwise notify the user
