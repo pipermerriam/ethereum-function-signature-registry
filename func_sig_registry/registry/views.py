@@ -41,7 +41,7 @@ class SiteIndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SiteIndexView, self).get_context_data(**kwargs)
         context['serializer'] = SignatureSearchForm()
-        context['total_signatures'] = Signature.objects.count()
+        context['total_signatures'] = Signature.objects.count() + EventSignature.objects.count()
         return context
 
 
