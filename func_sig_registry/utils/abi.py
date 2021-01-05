@@ -33,6 +33,10 @@ ARGUMENT_SCHEMA = {
         'type': {
             'type': 'string',
         },
+        'components': {
+            'type': 'array',
+            'items': {'$ref': '#/definitions/argument'},
+        },
     },
     'required': ['name', 'type'],
 }
@@ -57,13 +61,25 @@ EVENT_ARGUMENT_SCHEMA = {
 FUNCTION_SCHEMA = {
     'type': 'object',
     'properties': {
-        'constant': BOOLEAN,
-        'type': {'type': 'string', 'enum': ['function']},
+        'type': {'type': 'string', 'enum': ['function','receive']},
         'inputs': INPUTS,
         'outputs': OUTPUTS,
         'name': NAME,
+        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
     },
-    'required': ['constant', 'type', 'inputs', 'outputs', 'name'],
+    'required': ['type', 'inputs', 'outputs', 'name'],
+    'definitions': {
+        'argument': ARGUMENT_SCHEMA,
+    },
+}
+
+FALLBACK_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'type': {'type': 'string', 'enum': ['fallback']},
+        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
+    },
+    'required': ['type'],
     'definitions': {
         'argument': ARGUMENT_SCHEMA,
     },
@@ -88,6 +104,7 @@ CONSTRUCTOR_SCHEMA = {
     'properties': {
         'type': {'type': 'string', 'enum': ['constructor']},
         'inputs': INPUTS,
+        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
     },
     'required': ['type', 'inputs'],
     'definitions': {
@@ -109,6 +126,7 @@ CONTRACT_ABI_SCHEMA = {
         'event': EVENT_SCHEMA,
         'constructor': CONSTRUCTOR_SCHEMA,
         'argument': ARGUMENT_SCHEMA,
+        'fallback': FALLBACK_SCHEMA,
     }
 }
 
