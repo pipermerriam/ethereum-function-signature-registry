@@ -69,6 +69,11 @@ ABI_TUPLE_ARG = json.loads('[{"constant":false,"inputs":[{"components":[{"intern
 ABI_GET_ORDERS_INFO = json.loads('[{"constant":true,"inputs":[{"components":[{"name":"makerAddress","type":"address"},{"name":"takerAddress","type":"address"},{"name":"feeRecipientAddress","type":"address"},{"name":"senderAddress","type":"address"},{"name":"makerAssetAmount","type":"uint256"},{"name":"takerAssetAmount","type":"uint256"},{"name":"makerFee","type":"uint256"},{"name":"takerFee","type":"uint256"},{"name":"expirationTimeSeconds","type":"uint256"},{"name":"salt","type":"uint256"},{"name":"makerAssetData","type":"bytes"},{"name":"takerAssetData","type":"bytes"}],"name":"orders","type":"tuple[]"}],"name":"getOrdersInfo","outputs":[{"components":[{"name":"orderStatus","type":"uint8"},{"name":"orderHash","type":"bytes32"},{"name":"orderTakerAssetFilledAmount","type":"uint256"}],"name":"","type":"tuple[]"}],"payable":false,"stateMutability":"view","type":"function"}]')
 
 
+ISSUE_92_ABI = json.loads('''
+[ { "constant": false, "inputs": [ { "name": "newImplementation", "type": "address" } ], "name": "upgradeTo", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "newImplementation", "type": "address" }, { "name": "data", "type": "bytes" } ], "name": "upgradeToAndCall", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [], "name": "implementation", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "newAdmin", "type": "address" } ], "name": "changeAdmin", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "admin", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "name": "_logic", "type": "address" }, { "name": "_admin", "type": "address" }, { "name": "_data", "type": "bytes" } ], "payable": true, "stateMutability": "payable", "type": "constructor" }, { "payable": true, "stateMutability": "payable", "type": "fallback" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "previousAdmin", "type": "address" }, { "indexed": false, "name": "newAdmin", "type": "address" } ], "name": "AdminChanged", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "implementation", "type": "address" } ], "name": "Upgraded", "type": "event" } ]
+''')  # noqa: E501
+
+
 @pytest.mark.parametrize(
     'contract_abi,expected',
     (
@@ -96,6 +101,8 @@ ABI_GET_ORDERS_INFO = json.loads('[{"constant":true,"inputs":[{"components":[{"n
         (INCORRECT_INDEXED_TYPE, False),
         # event with indexed
         (SINGLE_EVENT_INDEXED, True),
+        # Issue 92
+        (ISSUE_92_ABI, True),
 
     ),
 )

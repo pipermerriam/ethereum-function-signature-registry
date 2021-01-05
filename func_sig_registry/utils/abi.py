@@ -116,6 +116,7 @@ CONTRACT_ABI_SCHEMA = {
     'type': 'array',
     'items': {
         'anyOf': [
+            {'$ref': '#/definitions/fallback'},
             {'$ref': '#/definitions/function'},
             {'$ref': '#/definitions/event'},
             {'$ref': '#/definitions/constructor'},
@@ -131,9 +132,13 @@ CONTRACT_ABI_SCHEMA = {
 }
 
 
+def validate_contract_abi(contract_abi):
+    validate(contract_abi, CONTRACT_ABI_SCHEMA)
+
+
 def is_valid_contract_abi(contract_abi):
     try:
-        validate(contract_abi, CONTRACT_ABI_SCHEMA)
+        validate_contract_abi(contract_abi)
     except ValidationError:
         return False
     else:
