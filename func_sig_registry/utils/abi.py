@@ -61,11 +61,11 @@ EVENT_ARGUMENT_SCHEMA = {
 FUNCTION_SCHEMA = {
     'type': 'object',
     'properties': {
-        'type': {'type': 'string', 'enum': ['function','receive']},
+        'type': {'type': 'string', 'enum': ['function', 'receive']},
         'inputs': INPUTS,
         'outputs': OUTPUTS,
         'name': NAME,
-        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
+        'stateMutability': {'type': 'string', 'enum': ['pure', 'view', 'nonpayable', 'payable']},
     },
     'required': ['type', 'inputs', 'outputs', 'name'],
     'definitions': {
@@ -77,7 +77,7 @@ FALLBACK_SCHEMA = {
     'type': 'object',
     'properties': {
         'type': {'type': 'string', 'enum': ['fallback']},
-        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
+        'stateMutability': {'type': 'string', 'enum': ['pure', 'view', 'nonpayable', 'payable']},
     },
     'required': ['type'],
     'definitions': {
@@ -104,7 +104,7 @@ CONSTRUCTOR_SCHEMA = {
     'properties': {
         'type': {'type': 'string', 'enum': ['constructor']},
         'inputs': INPUTS,
-        'stateMutability': {'type': 'string', 'enum': ['pure','view','nonpayable','payable']},
+        'stateMutability': {'type': 'string', 'enum': ['pure', 'view', 'nonpayable', 'payable']},
     },
     'required': ['type', 'inputs'],
     'definitions': {
