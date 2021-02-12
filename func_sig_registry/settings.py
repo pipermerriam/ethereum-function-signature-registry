@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     'func_sig_registry.registry',
     'rest_framework',
     'django_tables2',
-    'storages',
-    's3_folder_storage',
     'huey.contrib.djhuey',
     'corsheaders',
 ]
@@ -181,31 +179,6 @@ STATICFILES_STORAGE = env.get(
     type=str,
     default='django.contrib.staticfiles.storage.StaticFilesStorage',
 )
-
-
-# AWS Configuration
-DEFAULT_S3_PATH = "media"
-STATIC_S3_PATH = "static"
-
-AWS_ACCESS_KEY_ID = env.get('AWS_ACCESS_KEY_ID', type=str, default=None)
-AWS_SECRET_ACCESS_KEY = env.get('AWS_SECRET_ACCESS_KEY', type=str, default=None)
-AWS_STORAGE_BUCKET_NAME = env.get('AWS_STORAGE_BUCKET_NAME', type=str, default=None)
-AWS_DEFAULT_REGION = env.get('AWS_DEFAULT_REGION', type=str, default=None)
-
-# Boto config
-AWS_REDUCED_REDUNDANCY = True
-AWS_QUERYSTRING_AUTH = False
-AWS_S3_FILE_OVERWRITE = True
-AWS_S3_SECURE_URLS = True
-AWS_IS_GZIPPED = False
-AWS_PRELOAD_METADATA = True
-AWS_HEADERS = {
-    "Cache-Control": "public, max-age=86400",
-}
-
-if AWS_DEFAULT_REGION:
-    # Fix for https://github.com/boto/boto/issues/621
-    AWS_S3_HOST = "s3-{0}.amazonaws.com".format(AWS_DEFAULT_REGION)
 
 
 # DRF
