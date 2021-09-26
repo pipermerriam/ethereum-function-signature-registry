@@ -15,6 +15,7 @@ class SignatureFilter(filters.FilterSet):
     text_signature = filters.CharFilter(name='text_signature', lookup_type='icontains')
     bytes_signature = filters.MethodFilter()
     hex_signature = filters.MethodFilter()
+    hex_signature__in = filters.MethodFilter()
 
     class Meta:
         model = Signature
@@ -33,6 +34,10 @@ class SignatureFilter(filters.FilterSet):
             return qs.filter(bytes_signature__hex_signature=unprefixed_value)
         else:
             return qs.filter(bytes_signature__hex_signature__icontains=unprefixed_value)
+
+    def filter_hex_signature__in(self, name, qs, values):
+        unprefixed_values = [remove_0x_prefix(value.lower()) for value in values.split(',')]
+        return qs.filter(bytes_signature__hex_signature__in=unprefixed_values)
 
 
 class EventSignatureFilter(filters.FilterSet):

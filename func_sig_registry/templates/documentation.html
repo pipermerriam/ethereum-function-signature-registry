@@ -127,6 +127,17 @@
         <li>If the provided query is less than 4 bytes long then the results are filtered by substring match.</li>
         <li>If the provided query is longer than 4 bytes then the results are not filtered since it is an invalid query.</li>
       </ul>
+      <h4>Filtering on multiple <code>hex_signatures</code></h4>
+      <p>Match multiple queries using the <code>hex_signature__in</code> filter with multiple comma delimited <code>hex_signatures</code>.</p>
+      <blockquote><code>/api/v1/signatures/?hex_signature__in=0xabcd1234,0xefgh6789</code></blockquote>
+      <div class="alert alert-info" role="alert">
+        <p>The <code>0x</code> prefix on the query value is optional.</p>
+      </div>
+      <p>
+        <ul>
+          <li>The provided queries must be exactly 4 bytes. Substring matches not allowed with multiple query search.</li>
+        </ul>
+      <p>
       <h2>Creating Signatures <code>/api/v1/signatures/</code> <span class="label label-primary">POST</span></h2>
       <p>Creates a new signature</p>
       <h3>Example Request</h3>
@@ -186,7 +197,7 @@
       <li><code>text_signature</code> (string): The text representation of the event signature.</li>
       <li><code>bytes_signature</code> (string): The 32-byte event selector</li>
       <li><code>hex_signature</code> (string): The hex encoded 32-byte event selector.</li>
-    </ul>  
+    </ul>
 <pre>{
   "id": 19,
   "created_at": "2020-09-13T18:45:58.559831Z",
