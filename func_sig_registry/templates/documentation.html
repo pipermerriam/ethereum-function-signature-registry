@@ -44,7 +44,7 @@
       <h3>How to import a bunch of files</h3>
       <p>If you'd like to import many source files, you can do so with the following command line magic.</p>
       <pre>$ find /path/to/recursively/search/ -name *.sol | xargs -n 1 -I {} curl -F source_file=@{} https://www.4byte.directory{% url 'api:import-solidity' %}</pre>
-      <h1>Importing from Contract ABI</h1>
+      <h1>Importing from Contract ABI <code>{% url 'api:import-abi' %}</a></code> <span class="label label-primary">POST</span></h1>
       <p>You can import all of the function & event signatures from a contract by submitting the ABI</p>
       <h3>Example Request</h3>
       <pre>{
