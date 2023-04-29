@@ -16,7 +16,7 @@ TEST_EVENT_DATA = {
     'filter_data,expected',
     (
         # full text_signature
-        ({'text_signature': 'asd(int256,int256)'},
+        ({'text_signature': 'asd($ tox)'},
          ['asd']),
 
         # partial text_signature
